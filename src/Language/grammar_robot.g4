@@ -48,7 +48,6 @@ WHILE: 'while';
 IF: 'if';
 ELSE: 'else';
 
-INT : [-]?[0-9]+;
 FLOAT: [-]?([0-9]*[.])[0-9]+;
 ID: [a-zA-Z_][a-zA-Z_0-9]* ;
 WS: [ \t\n\r\f]+ -> skip ;
@@ -79,7 +78,7 @@ condition: expr comparison_operator expr;
 comparison_operator: EQ | LT | GT | LE | GE | NE;
 
 expr: ID
-    | number_literal
+    | FLOAT
     | NOT expr
     | expr AND expr
     | expr OR expr
@@ -91,8 +90,6 @@ expr: ID
     | observation
     ;
 
-number_literal: INT | FLOAT;
-
 direction: LEFT
     | RIGHT
     | UP
@@ -101,7 +98,6 @@ direction: LEFT
     | TOP_RIGHT
     | BOTTOM_LEFT
     | BOTTOM_RIGHT
-    | LOOK
     ;
 
 command_target: BOX_X

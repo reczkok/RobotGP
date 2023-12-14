@@ -1,24 +1,80 @@
 package Nodes;
 
-public class LookNode extends Node{
-    private int varIndex;
-    private int value;
+import java.util.ArrayList;
+import java.util.List;
 
+public class LookNode implements Node{
+    Node parent;
+    ControlStructures controlStructure;
+    Directions direction;
     public LookNode(Node parent) {
-        super(parent, ControlStructures.LOOK);
+        this.parent = parent;
+        this.controlStructure = ControlStructures.LOOK;
     }
 
-    public LookNode(Node parent, int varIndex, int value) {
-        super(parent, ControlStructures.LOOK);
-        this.varIndex = varIndex;
-        this.value = value;
+    @Override
+    public Node getParent() {
+        return this.parent;
     }
 
-    public int getVarIndex() {
-        return varIndex;
+    @Override
+    public ControlStructures getControlStructure() {
+        return this.controlStructure;
     }
 
-    public int getValue() {
-        return value;
+    @Override
+    public List<Node> getChildrenByControlStructure(ControlStructures controlStructure) {
+        return null;
+    }
+
+    @Override
+    public boolean isLiteral() {
+        return true;
+    }
+
+    @Override
+    public void initializeRandom(int maxDepth) {
+        int random = (int) (Math.random() * 8);
+        switch (random) {
+            case 0:
+                this.direction = Directions.UP;
+                break;
+            case 1:
+                this.direction = Directions.DOWN;
+                break;
+            case 2:
+                this.direction = Directions.LEFT;
+                break;
+            case 3:
+                this.direction = Directions.RIGHT;
+                break;
+            case 4:
+                this.direction = Directions.TOP_RIGHT;
+                break;
+            case 5:
+                this.direction = Directions.TOP_LEFT;
+                break;
+            case 6:
+                this.direction = Directions.BOTTOM_RIGHT;
+                break;
+            case 7:
+                this.direction = Directions.BOTTOM_LEFT;
+                break;
+        }
+    }
+
+    @Override
+    public void addChild(Node child) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public List<Node> getChildren() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void printAtIndent(int indent) {
+        System.out.print("look(" + this.direction + ")");
     }
 }

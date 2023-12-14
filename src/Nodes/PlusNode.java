@@ -1,24 +1,22 @@
 package Nodes;
 
-public class PlusNode extends Node{
-    private Node left;
-    private Node right;
+import java.util.*;
 
+public class PlusNode extends TwoArgOpNode{
     public PlusNode(Node parent) {
         super(parent, ControlStructures.PLUS);
     }
 
-    public PlusNode(Node parent, Node left, Node right) {
-        super(parent, ControlStructures.PLUS);
-        this.left = left;
-        this.right = right;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
+    @Override
+    public void printAtIndent(int indent) {
+        System.out.print("(");
+        if(this.left != null) {
+            this.left.printAtIndent(indent);
+        }
+        System.out.print(" PLUS ");
+        if(this.right != null) {
+            this.right.printAtIndent(indent);
+        }
+        System.out.print(")");
     }
 }

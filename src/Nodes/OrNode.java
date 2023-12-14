@@ -1,24 +1,20 @@
 package Nodes;
 
-public class OrNode extends Node{
-    private Node left;
-    private Node right;
-
+public class OrNode extends TwoArgOpNode{
     public OrNode(Node parent) {
         super(parent, ControlStructures.OR);
     }
 
-    public OrNode(Node parent, Node left, Node right) {
-        super(parent, ControlStructures.OR);
-        this.left = left;
-        this.right = right;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
+    @Override
+    public void printAtIndent(int indent) {
+        System.out.print("(");
+        if(this.left != null) {
+            this.left.printAtIndent(indent);
+        }
+        System.out.print(" OR ");
+        if(this.right != null) {
+            this.right.printAtIndent(indent);
+        }
+        System.out.print(")");
     }
 }

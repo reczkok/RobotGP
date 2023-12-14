@@ -1,24 +1,22 @@
 package Nodes;
 
-public class MinusNode extends Node{
-    private Node left;
-    private Node right;
+import java.util.*;
 
+public class MinusNode extends TwoArgOpNode{
     public MinusNode(Node parent) {
         super(parent, ControlStructures.MINUS);
     }
 
-    public MinusNode(Node parent, Node left, Node right) {
-        super(parent, ControlStructures.MINUS);
-        this.left = left;
-        this.right = right;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
+    @Override
+    public void printAtIndent(int indent) {
+        System.out.print("(");
+        if(this.left != null) {
+            this.left.printAtIndent(indent);
+        }
+        System.out.print(" - ");
+        if(this.right != null) {
+            this.right.printAtIndent(indent);
+        }
+        System.out.print(")");
     }
 }

@@ -1,24 +1,20 @@
 package Nodes;
 
-public class AndNode extends Node{
-    private Node left;
-    private Node right;
-
+public class AndNode extends TwoArgOpNode{
     public AndNode(Node parent) {
         super(parent, ControlStructures.AND);
     }
 
-    public AndNode(Node parent, Node left, Node right) {
-        super(parent, ControlStructures.AND);
-        this.left = left;
-        this.right = right;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
+    @Override
+    public void printAtIndent(int indent) {
+        System.out.print("(");
+        if(this.left != null) {
+            this.left.printAtIndent(indent);
+        }
+        System.out.print(" AND ");
+        if(this.right != null) {
+            this.right.printAtIndent(indent);
+        }
+        System.out.print(")");
     }
 }

@@ -3,12 +3,14 @@ package Nodes;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CoordNode implements Node{
-    Node parent;
-    ControlStructures controlStructure;
-    CommandTargets target;
-    public CoordNode(Node parent) {
+public class FloatNode implements Node{
+    public int varIndex;
+    private Node parent;
+    private final ControlStructures controlStructure;
+
+    public FloatNode(Node parent) {
         this.parent = parent;
+        this.controlStructure = ControlStructures.FLOAT;
     }
 
     @Override
@@ -33,26 +35,12 @@ public class CoordNode implements Node{
 
     @Override
     public void initializeRandom(int maxDepth) {
-        int random = (int) (Math.random() * 4);
-        switch (random) {
-            case 0:
-                this.target = CommandTargets.BOX_Y;
-                break;
-            case 1:
-                this.target = CommandTargets.BOX_X;
-                break;
-            case 2:
-                this.target = CommandTargets.SELF_Y;
-                break;
-            case 3:
-                this.target = CommandTargets.SELF_X;
-                break;
-        }
+        this.varIndex = (int) (Math.random() * NodeParameters.floatAmount);
     }
 
     @Override
     public void addChild(Node child) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("IdNode does not support addChild");
     }
 
     @Override
@@ -62,6 +50,6 @@ public class CoordNode implements Node{
 
     @Override
     public void printAtIndent(int indent) {
-        System.out.print("getCoord(" + this.target + ")");
+        System.out.print("float:" + this.varIndex);
     }
 }

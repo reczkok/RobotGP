@@ -1,24 +1,20 @@
 package Nodes;
 
-public class MultNode extends Node{
-    private Node left;
-    private Node right;
-
+public class MultNode extends TwoArgOpNode{
     public MultNode(Node parent) {
         super(parent, ControlStructures.MULTIPLY);
     }
 
-    public MultNode(Node parent, Node left, Node right) {
-        super(parent, ControlStructures.MULTIPLY);
-        this.left = left;
-        this.right = right;
-    }
-
-    public Node getLeft() {
-        return left;
-    }
-
-    public Node getRight() {
-        return right;
+    @Override
+    public void printAtIndent(int indent) {
+        System.out.print("(");
+        if(this.left != null) {
+            this.left.printAtIndent(indent);
+        }
+        System.out.print(" * ");
+        if(this.right != null) {
+            this.right.printAtIndent(indent);
+        }
+        System.out.print(")");
     }
 }

@@ -41,7 +41,6 @@ public enum ControlStructures {
     WHILE,
     IF,
     ELSE,
-    INT,
     FLOAT,
     ID,
     WS,

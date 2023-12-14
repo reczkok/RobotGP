@@ -1,5 +1,6 @@
 public class RobotGP {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Program test = ProgramFactory.generateRandomProgram();
+        test.print();
     }
 }
