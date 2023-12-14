@@ -14,4 +14,5 @@ public interface Node {
     void printAtIndent(int indent);
     void setDepth(int depth);
     int getDepth();
+    Node copy(Node parent);
 }

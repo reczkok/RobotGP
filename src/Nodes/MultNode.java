@@ -17,4 +17,16 @@ public class MultNode extends TwoArgOpNode{
         }
         System.out.print(")");
     }
+
+    @Override
+    public Node copy(Node parent) {
+        MultNode newNode = new MultNode(parent);
+        Node leftCopy = this.left.copy(newNode);
+        Node rightCopy = this.right.copy(newNode);
+        newNode.addChild(leftCopy);
+        newNode.addChild(rightCopy);
+        newNode.left = leftCopy;
+        newNode.right = rightCopy;
+        return newNode;
+    }
 }

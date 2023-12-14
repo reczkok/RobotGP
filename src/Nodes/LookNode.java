@@ -88,4 +88,11 @@ public class LookNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        LookNode copy = new LookNode(parent);
+        copy.direction = this.direction;
+        return copy;
+    }
 }

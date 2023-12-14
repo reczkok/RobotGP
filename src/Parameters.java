@@ -2,6 +2,7 @@ public record Parameters() {
     static int populationSize = 100000;
     static int maxGenerations = 50;
     static int maxInitialDepth = 4;
+    static int minInitialNodes = 20;
     static int maxDepth = 17;
     static int maxNodes = 1000000;
 

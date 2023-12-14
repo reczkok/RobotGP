@@ -165,4 +165,16 @@ public class AssignmentNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        AssignmentNode copy = new AssignmentNode(parent);
+        Node variableNodeCopy = this.varaiableNode.copy(copy);
+        Node exprNodeCopy = this.exprNode.copy(copy);
+        copy.addChild(variableNodeCopy);
+        copy.addChild(exprNodeCopy);
+        copy.exprNode = exprNodeCopy;
+        copy.varaiableNode = variableNodeCopy;
+        return copy;
+    }
 }

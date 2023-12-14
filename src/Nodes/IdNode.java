@@ -63,4 +63,11 @@ public class IdNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        IdNode idNode = new IdNode(parent);
+        idNode.varIndex = this.varIndex;
+        return idNode;
+    }
 }

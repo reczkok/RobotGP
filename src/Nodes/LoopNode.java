@@ -123,4 +123,20 @@ public class LoopNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        LoopNode loopNode = new LoopNode(parent);
+        Node conditionCopy = this.condition.copy(loopNode);
+        loopNode.addChild(conditionCopy);
+        loopNode.condition = conditionCopy;
+        if(!this.body.isEmpty()){
+            for(Node child : this.body){
+                Node childCopy = child.copy(loopNode);
+                loopNode.addChild(childCopy);
+                loopNode.body.add(childCopy);
+            }
+        }
+        return loopNode;
+    }
 }

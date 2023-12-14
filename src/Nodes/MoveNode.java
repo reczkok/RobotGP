@@ -91,4 +91,11 @@ public class MoveNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        MoveNode moveNode = new MoveNode(parent);
+        moveNode.direction = this.direction;
+        return moveNode;
+    }
 }

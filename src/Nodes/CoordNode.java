@@ -77,4 +77,11 @@ public class CoordNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        CoordNode copy = new CoordNode(parent);
+        copy.target = this.target;
+        return copy;
+    }
 }

@@ -55,6 +55,16 @@ public class MainNode implements Node{
         return this.depth;
     }
 
+    @Override
+    public Node copy(Node parent) {
+        MainNode mainNode = new MainNode(parent);
+        for(Node child : this.children){
+            Node childCopy = child.copy(mainNode);
+            mainNode.addChild(childCopy);
+        }
+        return mainNode;
+    }
+
     public void initializeRandom(int maxDepth) {
         if (maxDepth == 0) {
             return;

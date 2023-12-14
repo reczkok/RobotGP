@@ -63,4 +63,17 @@ public class ConditionNode extends TwoArgOpNode{
             this.right.printAtIndent(indent);
         }
     }
+
+    @Override
+    public Node copy(Node parent) {
+        ConditionNode newNode = new ConditionNode(parent);
+        Node leftCopy = this.left.copy(newNode);
+        Node rightCopy = this.right.copy(newNode);
+        newNode.addChild(leftCopy);
+        newNode.addChild(rightCopy);
+        newNode.left = leftCopy;
+        newNode.right = rightCopy;
+        newNode.operator = this.operator;
+        return newNode;
+    }
 }

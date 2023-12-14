@@ -23,9 +23,11 @@ public class Program {
         this.depth = 0;
     }
 
-    public void initializeRandom(int maxDepth){
-        this.root.initializeRandom(maxDepth);
-        this.updateTreeInfo();
+    public void initializeRandom(int maxDepth, int minNodes){
+        while (this.depth < maxDepth || this.nodes.size() < minNodes){
+            this.root.initializeRandom(maxDepth);
+            this.updateTreeInfo();
+        }
     }
 
     public void print(){
@@ -35,6 +37,10 @@ public class Program {
     private void registerNode(Node node, int depth){
         ControlStructures childControlStructure = node.getControlStructure();
         node.setDepth(depth);
+        if(childControlStructure == ControlStructures.MAIN){
+            this.nodes.add(node);
+            return;
+        }
         if(this.childrenControlStructures.contains(childControlStructure)){
             this.nodesByControlStructure.get(childControlStructure).add(node);
         }else{
@@ -47,6 +53,9 @@ public class Program {
     }
 
     public void updateTreeInfo(){
+        this.nodes.clear();
+        this.nodesByControlStructure.clear();
+        this.childrenControlStructures.clear();
         List<Node> currentNodes = new ArrayList<>();
         currentNodes.add(this.root);
         int depth = 0;
@@ -61,5 +70,33 @@ public class Program {
             depth++;
         }
         this.depth = depth;
+    }
+
+    public Node getRandomNode(){
+        int random = (int) (Math.random() * (this.nodes.size() - 1)) + 1;
+        return this.nodes.get(random);
+    }
+
+    public boolean hasNodeOfType(ControlStructures controlStructure){
+        return this.childrenControlStructures.contains(controlStructure);
+    }
+
+    public List<Node> getNodesOfType(ControlStructures controlStructure){
+        return this.nodesByControlStructure.get(controlStructure);
+    }
+
+    public Set<ControlStructures> getChildrenControlStructures() {
+        return this.childrenControlStructures;
+    }
+
+    public Program copy(){
+        MainNode rootCopy = (MainNode) this.root.copy(null);
+        Program programCopy = new Program(rootCopy);
+        programCopy.updateTreeInfo();
+        return programCopy;
+    }
+
+    public MainNode getRoot() {
+        return this.root;
     }
 }

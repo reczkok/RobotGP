@@ -168,4 +168,27 @@ public class IfNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        IfNode copy = new IfNode(parent);
+        Node conditionCopy = this.condition.copy(copy);
+        copy.addChild(conditionCopy);
+        copy.condition = conditionCopy;
+        if(!this.ifBody.isEmpty()){
+            for(Node child : this.ifBody){
+                Node childCopy = child.copy(copy);
+                copy.addChild(childCopy);
+                copy.ifBody.add(childCopy);
+            }
+        }
+        if(!this.elseBody.isEmpty()) {
+            for (Node child : this.elseBody) {
+                Node childCopy = child.copy(copy);
+                copy.addChild(childCopy);
+                copy.elseBody.add(childCopy);
+            }
+        }
+        return copy;
+    }
 }

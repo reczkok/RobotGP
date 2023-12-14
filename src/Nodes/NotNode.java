@@ -172,4 +172,11 @@ public class NotNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        NotNode notNode = new NotNode(parent);
+        notNode.addChild(this.child.copy(notNode));
+        return notNode;
+    }
 }

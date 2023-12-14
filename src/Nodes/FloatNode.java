@@ -63,4 +63,11 @@ public class FloatNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    @Override
+    public Node copy(Node parent) {
+        FloatNode copy = new FloatNode(parent);
+        copy.varIndex = this.varIndex;
+        return copy;
+    }
 }

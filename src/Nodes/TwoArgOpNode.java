@@ -177,4 +177,14 @@ public abstract class TwoArgOpNode implements Node{
     public int getDepth() {
         return this.depth;
     }
+
+    public void replaceChild(Node oldChild, Node newChild){
+        if(this.left == oldChild){
+            this.left = newChild;
+        } else if(this.right == oldChild){
+            this.right = newChild;
+        } else {
+            throw new RuntimeException("Invalid child");
+        }
+    }
 }
