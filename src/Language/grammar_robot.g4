@@ -24,24 +24,11 @@ DIVISION: '/';
 MULTIPLY: '*';
 MODULO: '%';
 
-LEFT: 'left';
-RIGHT: 'right';
-UP: 'up';
-DOWN: 'down';
-TOP_LEFT: 'top_left';
-TOP_RIGHT: 'top_right';
-BOTTOM_LEFT: 'bottom_left';
-BOTTOM_RIGHT: 'bottom_right';
+TRUE: 'true';
+FALSE: 'false';
 
-BOX_X: 'box_x';
-BOX_Y: 'box_y';
-SELF_X: 'self_x';
-SELF_Y: 'self_y';
-
-GET_COORDINATE: 'get_coordinate';
-
-LOOK: 'look';
-MOVE: 'move';
+OUT: 'out';
+IN: 'in';
 
 MAIN: 'main()';
 WHILE: 'while';
@@ -49,6 +36,7 @@ IF: 'if';
 ELSE: 'else';
 
 FLOAT: [-]?([0-9]*[.])[0-9]+;
+INT: [-]?([0]|[1-9][0-9]*);
 ID: [a-zA-Z_][a-zA-Z_0-9]* ;
 WS: [ \t\n\r\f]+ -> skip ;
 
@@ -60,48 +48,38 @@ main: MAIN '{' definition* '}';
 definition: assignment
     | loop
     | checker
-    | directive
+    | output
     ;
 
-directive: MOVE '(' direction ')' ';';
+input: IN '(' ')' ;
 
-observation: LOOK '(' direction ')' | GET_COORDINATE '(' command_target ')';
+output: OUT '(' expr ')' ';' ;
 
 assignment: ID '=' expr ';';
 
-loop: WHILE '(' condition ')' '{' definition* '}';
+loop: WHILE '(' conditions ')' '{' definition* '}';
 
-checker: IF '(' condition ')' '{' definition* '}' (ELSE '{' definition* '}')?;
+checker: IF '(' conditions ')' '{' definition* '}' (ELSE '{' definition* '}')?;
 
-condition: expr comparison_operator expr;
+conditions: condition (logical_operator condition)*;
+
+logical_operator: AND | OR;
+
+condition: expr comparison_operator expr
+         | NOT '(' expr comparison_operator expr ')'
+         ;
 
 comparison_operator: EQ | LT | GT | LE | GE | NE;
 
 expr: ID
     | FLOAT
-    | NOT expr
-    | expr AND expr
-    | expr OR expr
-    | expr PLUS expr
+    | INT
+    | boolean
     | expr MINUS expr
     | expr DIVISION expr
     | expr MULTIPLY expr
     | expr MODULO expr
-    | observation
+    | input
     ;
 
-direction: LEFT
-    | RIGHT
-    | UP
-    | DOWN
-    | TOP_LEFT
-    | TOP_RIGHT
-    | BOTTOM_LEFT
-    | BOTTOM_RIGHT
-    ;
-
-command_target: BOX_X
-    | BOX_Y
-    | SELF_X
-    | SELF_Y
-    ;
+boolean: TRUE | FALSE;
