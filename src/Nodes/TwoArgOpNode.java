@@ -8,6 +8,7 @@ public abstract class TwoArgOpNode implements Node{
     protected Node left;
     protected Node right;
     private Set<ControlStructures> childrenControlStructures;
+    private int depth;
 
     public TwoArgOpNode(Node parent, ControlStructures controlStructure) {
         this.parent = parent;
@@ -165,5 +166,15 @@ public abstract class TwoArgOpNode implements Node{
         children.add(this.left);
         children.add(this.right);
         return children;
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 }

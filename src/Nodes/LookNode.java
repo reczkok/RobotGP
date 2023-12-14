@@ -7,6 +7,7 @@ public class LookNode implements Node{
     Node parent;
     ControlStructures controlStructure;
     Directions direction;
+    private int depth;
     public LookNode(Node parent) {
         this.parent = parent;
         this.controlStructure = ControlStructures.LOOK;
@@ -76,5 +77,15 @@ public class LookNode implements Node{
     @Override
     public void printAtIndent(int indent) {
         System.out.print("look(" + this.direction + ")");
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 }

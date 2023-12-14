@@ -12,4 +12,6 @@ public interface Node {
     void addChild(Node child);
     List<Node> getChildren();
     void printAtIndent(int indent);
+    void setDepth(int depth);
+    int getDepth();
 }

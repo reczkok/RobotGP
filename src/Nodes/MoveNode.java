@@ -7,6 +7,7 @@ public class MoveNode implements Node{
     Node parent;
     ControlStructures controlStructure;
     Directions direction;
+    private int depth;
     public MoveNode(Node parent) {
         this.parent = parent;
         this.controlStructure = ControlStructures.MOVE;
@@ -79,5 +80,15 @@ public class MoveNode implements Node{
             System.out.print("\t");
         }
         System.out.print("move(" + this.direction + ");\n");
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 }

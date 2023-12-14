@@ -8,6 +8,7 @@ public class NotNode implements Node{
     private Node child;
     private Map<ControlStructures, List<Node>> nodesByControlStructure;
     private Set<ControlStructures> childrenControlStructures;
+    private int depth;
 
     public NotNode(Node parent) {
         this.parent = parent;
@@ -160,5 +161,15 @@ public class NotNode implements Node{
         System.out.print("NOT(");
         this.child.printAtIndent(indent + 1);
         System.out.print(")");
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 }

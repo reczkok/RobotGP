@@ -11,6 +11,7 @@ public class IfNode implements Node{
     private ControlStructures controlStructure;
     private Map<ControlStructures, List<Node>> nodesByControlStructure;
     private Set<ControlStructures> childrenControlStructures;
+    private int depth;
 
     public IfNode(Node parent) {
         this.parent = parent;
@@ -156,5 +157,15 @@ public class IfNode implements Node{
             }
         }
         System.out.println("}");
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 }

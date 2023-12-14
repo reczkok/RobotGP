@@ -7,6 +7,7 @@ public class IdNode implements Node{
     public int varIndex;
     private Node parent;
     private final ControlStructures controlStructure;
+    private int depth;
 
     public IdNode(Node parent) {
         this.parent = parent;
@@ -51,5 +52,15 @@ public class IdNode implements Node{
     @Override
     public void printAtIndent(int indent) {
         System.out.print("Id:" + this.varIndex);
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 }

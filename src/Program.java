@@ -25,13 +25,41 @@ public class Program {
 
     public void initializeRandom(int maxDepth){
         this.root.initializeRandom(maxDepth);
+        this.updateTreeInfo();
     }
 
     public void print(){
         this.root.printAtIndent(0);
     }
 
-    public void updateTreeInfo(){
+    private void registerNode(Node node, int depth){
+        ControlStructures childControlStructure = node.getControlStructure();
+        node.setDepth(depth);
+        if(this.childrenControlStructures.contains(childControlStructure)){
+            this.nodesByControlStructure.get(childControlStructure).add(node);
+        }else{
+            List<Node> children = new ArrayList<>();
+            children.add(node);
+            this.nodesByControlStructure.put(childControlStructure, children);
+            this.childrenControlStructures.add(childControlStructure);
+        }
+        this.nodes.add(node);
+    }
 
+    public void updateTreeInfo(){
+        List<Node> currentNodes = new ArrayList<>();
+        currentNodes.add(this.root);
+        int depth = 0;
+        while(!currentNodes.isEmpty()){
+            List<Node> nextNodes = new ArrayList<>();
+            for(Node node : currentNodes){
+                this.registerNode(node, depth);
+                List<Node> children = node.getChildren();
+                nextNodes.addAll(children);
+            }
+            currentNodes = nextNodes;
+            depth++;
+        }
+        this.depth = depth;
     }
 }

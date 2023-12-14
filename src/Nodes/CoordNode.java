@@ -7,8 +7,11 @@ public class CoordNode implements Node{
     Node parent;
     ControlStructures controlStructure;
     CommandTargets target;
+    private int depth;
+
     public CoordNode(Node parent) {
         this.parent = parent;
+        this.controlStructure = ControlStructures.GET_COORDINATE;
     }
 
     @Override
@@ -63,5 +66,15 @@ public class CoordNode implements Node{
     @Override
     public void printAtIndent(int indent) {
         System.out.print("getCoord(" + this.target + ")");
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 }

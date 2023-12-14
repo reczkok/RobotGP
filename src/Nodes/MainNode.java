@@ -8,6 +8,7 @@ public class MainNode implements Node{
     private ControlStructures controlStructure;
     private Map<ControlStructures, List<Node>> nodesByControlStructure;
     private Set<ControlStructures> childrenControlStructures;
+    private int depth;
 
     public MainNode(Node parent) {
         this.children = new ArrayList<>();
@@ -42,6 +43,16 @@ public class MainNode implements Node{
             child.printAtIndent(indent + 1);
         }
         System.out.println("}");
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 
     public void initializeRandom(int maxDepth) {

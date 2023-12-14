@@ -7,6 +7,7 @@ public class FloatNode implements Node{
     public int varIndex;
     private Node parent;
     private final ControlStructures controlStructure;
+    private int depth;
 
     public FloatNode(Node parent) {
         this.parent = parent;
@@ -51,5 +52,15 @@ public class FloatNode implements Node{
     @Override
     public void printAtIndent(int indent) {
         System.out.print("float:" + this.varIndex);
+    }
+
+    @Override
+    public void setDepth(int depth) {
+        this.depth = depth;
+    }
+
+    @Override
+    public int getDepth() {
+        return this.depth;
     }
 }
