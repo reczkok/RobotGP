@@ -1,5 +1,6 @@
 package Nodes;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -13,17 +14,23 @@ public class AssignmentNode implements Node{
     private Node parent;
     private List<Node> children;
     private ControlStructures controlStructure;
-    private Map<ControlStructures, List<Node>> nodesByControlStructure;
-    private Set<ControlStructures> childrenControlStructures;
     private int depth;
 
 
     public AssignmentNode(Node parent) {
         this.parent = parent;
         this.controlStructure = ControlStructures.ASSIGNMENT;
-        this.childrenControlStructures = new HashSet<>();
-        this.nodesByControlStructure = new HashMap<>();
         this.children = new ArrayList<>();
+    }
+
+    public AssignmentNode(Node parent, Node variable, Node expression){
+        this.parent = parent;
+        this.controlStructure = ControlStructures.ASSIGNMENT;
+        this.children = new ArrayList<>();
+        this.varaiableNode = variable;
+        this.exprNode = expression;
+        this.addChild(variable);
+        this.addChild(expression);
     }
 
     @Override
@@ -37,14 +44,6 @@ public class AssignmentNode implements Node{
     }
 
     @Override
-    public List<Node> getChildrenByControlStructure(ControlStructures controlStructure) {
-        if (this.childrenControlStructures.contains(controlStructure)) {
-            return this.nodesByControlStructure.get(controlStructure);
-        }
-        return null;
-    }
-
-    @Override
     public boolean isLiteral() {
         return false;
     }
@@ -55,88 +54,13 @@ public class AssignmentNode implements Node{
         idNode.initializeRandom(maxDepth - 1);
         this.varaiableNode = idNode;
         this.addChild(idNode);
-        int random = (int) (Math.random() * 11);
-        switch (random) {
-            case 0:
-                IdNode idNode1 = new IdNode(this);
-                idNode1.initializeRandom(maxDepth - 1);
-                this.exprNode = idNode1;
-                this.addChild(idNode1);
-                break;
-            case 1:
-                FloatNode floatNode = new FloatNode(this);
-                floatNode.initializeRandom(maxDepth - 1);
-                this.exprNode = floatNode;
-                this.addChild(floatNode);
-                break;
-            case 2:
-                AndNode andNode = new AndNode(this);
-                andNode.initializeRandom(maxDepth - 1);
-                this.exprNode = andNode;
-                this.addChild(andNode);
-                break;
-            case 3:
-                OrNode orNode = new OrNode(this);
-                orNode.initializeRandom(maxDepth - 1);
-                this.exprNode = orNode;
-                this.addChild(orNode);
-                break;
-            case 4:
-                NotNode notNode = new NotNode(this);
-                notNode.initializeRandom(maxDepth - 1);
-                this.exprNode = notNode;
-                this.addChild(notNode);
-                break;
-            case 5:
-                PlusNode plusNode = new PlusNode(this);
-                plusNode.initializeRandom(maxDepth - 1);
-                this.exprNode = plusNode;
-                this.addChild(plusNode);
-                break;
-            case 6:
-                MinusNode minusNode = new MinusNode(this);
-                minusNode.initializeRandom(maxDepth - 1);
-                this.exprNode = minusNode;
-                this.addChild(minusNode);
-                break;
-            case 7:
-                DivisionNode divisionNode = new DivisionNode(this);
-                divisionNode.initializeRandom(maxDepth - 1);
-                this.exprNode = divisionNode;
-                this.addChild(divisionNode);
-                break;
-            case 8:
-                MultNode multNode = new MultNode(this);
-                multNode.initializeRandom(maxDepth - 1);
-                this.exprNode = multNode;
-                this.addChild(multNode);
-                break;
-            case 9:
-                ModuloNode moduloNode = new ModuloNode(this);
-                moduloNode.initializeRandom(maxDepth - 1);
-                this.exprNode = moduloNode;
-                this.addChild(moduloNode);
-                break;
-            case 10:
-                LookNode lookNode = new LookNode(this);
-                lookNode.initializeRandom(maxDepth - 1);
-                this.exprNode = lookNode;
-                this.addChild(lookNode);
-                break;
-        }
+        Node exprNode = this.getRandomNode(maxDepth);
+        this.exprNode = exprNode;
+        this.addChild(exprNode);
     }
 
     @Override
     public void addChild(Node child) {
-        ControlStructures childControlStructure = child.getControlStructure();
-        if(this.childrenControlStructures.contains(childControlStructure)){
-            this.nodesByControlStructure.get(childControlStructure).add(child);
-        }else{
-            List<Node> children = new ArrayList<>();
-            children.add(child);
-            this.nodesByControlStructure.put(childControlStructure, children);
-            this.childrenControlStructures.add(childControlStructure);
-        }
         this.children.add(child);
     }
 
@@ -176,5 +100,120 @@ public class AssignmentNode implements Node{
         copy.exprNode = exprNodeCopy;
         copy.varaiableNode = variableNodeCopy;
         return copy;
+    }
+
+    @Override
+    public void replaceChild(Node oldChild, Node newChild) {
+        if(this.varaiableNode == oldChild){
+            this.varaiableNode = newChild;
+        }
+        if(this.exprNode == oldChild){
+            this.exprNode = newChild;
+        }
+        this.children.remove(oldChild);
+        this.addChild(newChild);
+    }
+
+    @Override
+    public List<ControlStructures> getLegalAlternatives(Node child) {
+        if (child == this.varaiableNode) {
+            return Arrays.asList(ControlStructures.ID);
+        } else if (child == this.exprNode) {
+            return Arrays.asList(ControlStructures.ID, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INT, ControlStructures.INPUT);
+        } else {
+            throw new UnsupportedOperationException("AssignmentNode does not contain child");
+        }
+    }
+
+    @Override
+    public void printAtIndent(int i, PrintWriter printWriter) {
+        for (int j = 0; j < i; j++) {
+            printWriter.print("\t");
+        }
+        this.varaiableNode.printAtIndent(i, printWriter);
+        printWriter.print(" = ");
+        this.exprNode.printAtIndent(i, printWriter);
+        printWriter.println(";");
+    }
+
+    @Override
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    private Node getRandomNode(int maxDepth) {
+        if(maxDepth <= 0){
+            int random = (int) (Math.random() * 5);
+            switch (random) {
+                case 0:
+                    IdNode idNode = new IdNode(this);
+                    idNode.initializeRandom(maxDepth - 1);
+                    return idNode;
+                case 1:
+                    IntNode intNode = new IntNode(this);
+                    intNode.initializeRandom(maxDepth - 1);
+                    return intNode;
+                case 2:
+                    FloatNode floatNode = new FloatNode(this);
+                    floatNode.initializeRandom(maxDepth - 1);
+                    return floatNode;
+                case 3:
+                    BoolNode boolNode = new BoolNode(this);
+                    boolNode.initializeRandom(maxDepth - 1);
+                    return boolNode;
+                case 4:
+                    InputNode inputNode = new InputNode(this);
+                    inputNode.initializeRandom(maxDepth - 1);
+                    return inputNode;
+                default:
+                    throw new RuntimeException("Invalid random number somehow");
+            }
+        }else {
+            int random = (int) (Math.random() * 10);
+            switch (random) {
+                case 0:
+                    IdNode idNode1 = new IdNode(this);
+                    idNode1.initializeRandom(maxDepth - 1);
+                    return idNode1;
+                case 1:
+                    IntNode intNode = new IntNode(this);
+                    intNode.initializeRandom(maxDepth - 1);
+                    return intNode;
+                case 2:
+                    FloatNode floatNode = new FloatNode(this);
+                    floatNode.initializeRandom(maxDepth - 1);
+                    return floatNode;
+                case 3:
+                    BoolNode boolNode = new BoolNode(this);
+                    boolNode.initializeRandom(maxDepth - 1);
+                    return boolNode;
+                case 4:
+                    PlusNode plusNode = new PlusNode(this);
+                    plusNode.initializeRandom(maxDepth - 1);
+                    return plusNode;
+                case 5:
+                    MinusNode minusNode = new MinusNode(this);
+                    minusNode.initializeRandom(maxDepth - 1);
+                    return minusNode;
+                case 6:
+                    DivisionNode divisionNode = new DivisionNode(this);
+                    divisionNode.initializeRandom(maxDepth - 1);
+                    return divisionNode;
+                case 7:
+                    MultNode multNode = new MultNode(this);
+                    multNode.initializeRandom(maxDepth - 1);
+                    return multNode;
+                case 8:
+                    ModuloNode moduloNode = new ModuloNode(this);
+                    moduloNode.initializeRandom(maxDepth - 1);
+                    return moduloNode;
+                case 9:
+                    InputNode inputNode = new InputNode(this);
+                    inputNode.initializeRandom(maxDepth - 1);
+                    return inputNode;
+                default:
+                    throw new RuntimeException("Invalid random number somehow");
+            }
+        }
     }
 }

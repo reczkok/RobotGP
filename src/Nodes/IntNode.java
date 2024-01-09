@@ -1,26 +1,24 @@
 package Nodes;
 
-import GP.Parameters;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FloatNode implements Node{
-    public float value;
+public class IntNode implements Node{
+    public int varIndex;
     private Node parent;
     private final ControlStructures controlStructure;
     private int depth;
 
-    public FloatNode(Node parent) {
+    public IntNode(Node parent) {
         this.parent = parent;
-        this.controlStructure = ControlStructures.FLOAT;
+        this.controlStructure = ControlStructures.INT;
     }
 
-    public FloatNode(Node parent, String value) {
+    public IntNode(Node parent, String value) {
         this.parent = parent;
-        this.controlStructure = ControlStructures.FLOAT;
-        this.value = Float.parseFloat(value);
+        this.controlStructure = ControlStructures.INT;
+        this.varIndex = Integer.parseInt(value);
     }
 
     @Override
@@ -32,6 +30,7 @@ public class FloatNode implements Node{
     public ControlStructures getControlStructure() {
         return this.controlStructure;
     }
+
     @Override
     public boolean isLiteral() {
         return true;
@@ -39,7 +38,7 @@ public class FloatNode implements Node{
 
     @Override
     public void initializeRandom(int maxDepth) {
-        this.value = (float) (Math.random() * NodeParameters.floatAmount);
+        this.varIndex = (int) (Math.random() * NodeParameters.intAmount);
     }
 
     @Override
@@ -54,7 +53,7 @@ public class FloatNode implements Node{
 
     @Override
     public void printAtIndent(int indent) {
-        System.out.print(this.value);
+        System.out.print(this.varIndex);
     }
 
     @Override
@@ -69,14 +68,14 @@ public class FloatNode implements Node{
 
     @Override
     public Node copy(Node parent) {
-        FloatNode copy = new FloatNode(parent);
-        copy.value = this.value;
+        IntNode copy = new IntNode(parent);
+        copy.varIndex = this.varIndex;
         return copy;
     }
 
     @Override
     public void replaceChild(Node oldChild, Node newChild) {
-        throw new UnsupportedOperationException("Cannot replace child of IdNode");
+        throw new UnsupportedOperationException("IdNode does not support replaceChild");
     }
 
     @Override
@@ -86,7 +85,7 @@ public class FloatNode implements Node{
 
     @Override
     public void printAtIndent(int i, PrintWriter printWriter) {
-        printWriter.print(this.value);
+        printWriter.print(this.varIndex);
     }
 
     @Override

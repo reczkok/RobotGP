@@ -4,32 +4,64 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1590ce6d-2d78-4713-a1ab-e65747ad4f7b" name="Changes" comment="Added depth info">
+    <list default="true" id="1590ce6d-2d78-4713-a1ab-e65747ad4f7b" name="Changes" comment="New grammar :(">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/antlr_antlr4_runtime.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/antlr_antlr4_runtime1.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/openjfx_javafx_base.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/openjfx_javafx_controls.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/openjfx_javafx_graphics.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GP/Evolver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GP/LastAccessed.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GP/NodeFactory.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/GP/ProgramVariable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/Deserializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/Interpreter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/ProgramVisitor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robot.interp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robot.tokens" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robotBaseListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robotBaseVisitor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robotLexer.interp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robotLexer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robotLexer.tokens" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robotListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robotParser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Interpreter/Language/grammar_robotVisitor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Nodes/BoolNode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Nodes/InputNode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Nodes/IntNode.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Nodes/LogicalComparison.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Evolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Evolver.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RobotGP.iml" beforeDir="false" afterPath="$PROJECT_DIR$/RobotGP.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Evolver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Language/grammar_robot.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/Language/grammar_robot.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/AndNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/AndNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/AssignmentNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/AssignmentNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/CommandTargets.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/ConditionNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ConditionNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/CoordNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/CoordNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/ControlStructures.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ControlStructures.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/CoordNode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/Directions.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/DivisionNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/DivisionNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/FloatNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/FloatNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/IdNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/IdNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/IfNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/IfNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/LookNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/LookNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/LookNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/OutputNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/LoopNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/LoopNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/MainNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/MainNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/MinusNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/MinusNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/ModuloNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/ModuloNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Nodes/MoveNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/MoveNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/MoveNode.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/MultNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/MultNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/Node.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Nodes/NodeParameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/NodeParameters.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/NotNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/NotNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/OrNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/OrNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/PlusNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/PlusNode.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Nodes/TwoArgOpNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Nodes/TwoArgOpNode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parameters.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Program.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ProgramFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ProgramFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Parameters.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GP/Parameters.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GP/Program.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ProgramFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/GP/ProgramFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/RobotGP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RobotGP.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,26 +91,41 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/User/IdeaProjects/RobotGP/RobotGP/src/Interpreter/Language",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;ANTLRv4&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "ANTLRv4"
     ]
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\User\IdeaProjects\RobotGP\RobotGP\src\Interpreter\Language" />
+      <recent name="C:\Users\User\IdeaProjects\RobotGP\RobotGP\.idea" />
+      <recent name="C:\Users\User\IdeaProjects\RobotGP\RobotGP\src\Interpreter" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="RobotGP" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="RobotGP" />
@@ -103,7 +150,10 @@
       <updated>1702478475578</updated>
       <workItem from="1702478476700" duration="194000" />
       <workItem from="1702478683833" duration="13632000" />
-      <workItem from="1702540908751" duration="25061000" />
+      <workItem from="1702540908751" duration="25557000" />
+      <workItem from="1702577479670" duration="44000" />
+      <workItem from="1702579583013" duration="3226000" />
+      <workItem from="1704807669930" duration="27888000" />
     </task>
     <task id="LOCAL-00001" summary="Initial XDDD">
       <option name="closed" value="true" />
@@ -129,7 +179,23 @@
       <option name="project" value="LOCAL" />
       <updated>1702559735525</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Swapping">
+      <option name="closed" value="true" />
+      <created>1702566796778</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1702566796778</updated>
+    </task>
+    <task id="LOCAL-00005" summary="New grammar :(">
+      <option name="closed" value="true" />
+      <created>1702581088915</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1702581088915</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,15 +216,18 @@
     <MESSAGE value="Initial XDDD" />
     <MESSAGE value="Base program generation" />
     <MESSAGE value="Added depth info" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added depth info" />
+    <MESSAGE value="Swapping" />
+    <MESSAGE value="New grammar :(" />
+    <option name="LAST_COMMIT_MESSAGE" value="New grammar :(" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
-        <breakpoint enabled="true" type="java-exception">
-          <properties class="java.lang.NullPointerException" package="java.lang" />
-          <option name="timeStamp" value="3" />
-        </breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/GP/Evolver.java</url>
+          <line>18</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <pin-to-top-manager>

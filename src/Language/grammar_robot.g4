@@ -1,8 +1,8 @@
 grammar grammar_robot;
 
-AND : 'and' ;
-OR : 'or' ;
-NOT : 'not' ;
+AND : 'AND' ;
+OR : 'OR' ;
+NOT : 'NOT' ;
 AS : '=' ;
 COMMA : ',' ;
 SEMI : ';' ;
@@ -43,7 +43,7 @@ WS: [ \t\n\r\f]+ -> skip ;
 
 program: main EOF ;
 
-main: MAIN '{' definition* '}';
+main: MAIN LCURLY definition* RCURLY;
 
 definition: assignment
     | loop
@@ -51,27 +51,34 @@ definition: assignment
     | output
     ;
 
-input: IN '(' ')' ;
+input: IN LPAREN RPAREN;
 
-output: OUT '(' expr ')' ';' ;
+output: OUT LPAREN expr RPAREN SEMI;
 
-assignment: ID '=' expr ';';
+assignment: ID AS expr SEMI;
 
-loop: WHILE '(' conditions ')' '{' definition* '}';
+loop: WHILE LPAREN conditions RPAREN LCURLY definition* RCURLY;
 
-checker: IF '(' conditions ')' '{' definition* '}' (ELSE '{' definition* '}')?;
+checker: IF LPAREN conditions RPAREN LCURLY definition* RCURLY (else_block)?;
 
-conditions: condition (logical_operator condition)*;
+else_block: ELSE LCURLY definition* RCURLY;
+
+conditions: condition
+           |LPAREN conditions RPAREN logical_operator LPAREN conditions RPAREN
+           |NOT LPAREN conditions RPAREN;
 
 logical_operator: AND | OR;
 
 condition: expr comparison_operator expr
-         | NOT '(' expr comparison_operator expr ')'
+         | LPAREN expr comparison_operator expr RPAREN
          ;
 
 comparison_operator: EQ | LT | GT | LE | GE | NE;
 
-expr: ID
+
+
+expr: LPAREN expr RPAREN
+    | ID
     | FLOAT
     | INT
     | boolean
@@ -79,6 +86,7 @@ expr: ID
     | expr DIVISION expr
     | expr MULTIPLY expr
     | expr MODULO expr
+    | expr PLUS expr
     | input
     ;
 

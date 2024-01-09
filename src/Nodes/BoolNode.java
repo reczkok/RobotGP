@@ -1,26 +1,24 @@
 package Nodes;
 
-import GP.Parameters;
-
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FloatNode implements Node{
-    public float value;
+public class BoolNode implements Node{
+    public boolean val;
     private Node parent;
     private final ControlStructures controlStructure;
     private int depth;
 
-    public FloatNode(Node parent) {
+    public BoolNode(Node parent) {
         this.parent = parent;
-        this.controlStructure = ControlStructures.FLOAT;
+        this.controlStructure = ControlStructures.BOOL;
     }
 
-    public FloatNode(Node parent, String value) {
+    public BoolNode(Node parent, boolean val) {
         this.parent = parent;
-        this.controlStructure = ControlStructures.FLOAT;
-        this.value = Float.parseFloat(value);
+        this.controlStructure = ControlStructures.BOOL;
+        this.val = val;
     }
 
     @Override
@@ -32,6 +30,7 @@ public class FloatNode implements Node{
     public ControlStructures getControlStructure() {
         return this.controlStructure;
     }
+
     @Override
     public boolean isLiteral() {
         return true;
@@ -39,7 +38,7 @@ public class FloatNode implements Node{
 
     @Override
     public void initializeRandom(int maxDepth) {
-        this.value = (float) (Math.random() * NodeParameters.floatAmount);
+        this.val = Math.random() < 0.5;
     }
 
     @Override
@@ -54,7 +53,11 @@ public class FloatNode implements Node{
 
     @Override
     public void printAtIndent(int indent) {
-        System.out.print(this.value);
+        if (this.val) {
+            System.out.print("true");
+        } else {
+            System.out.print("false");
+        }
     }
 
     @Override
@@ -69,14 +72,14 @@ public class FloatNode implements Node{
 
     @Override
     public Node copy(Node parent) {
-        FloatNode copy = new FloatNode(parent);
-        copy.value = this.value;
+        BoolNode copy = new BoolNode(parent);
+        copy.val = this.val;
         return copy;
     }
 
     @Override
     public void replaceChild(Node oldChild, Node newChild) {
-        throw new UnsupportedOperationException("Cannot replace child of IdNode");
+        throw new UnsupportedOperationException("Cannot replace child of BoolNode");
     }
 
     @Override
@@ -86,7 +89,11 @@ public class FloatNode implements Node{
 
     @Override
     public void printAtIndent(int i, PrintWriter printWriter) {
-        printWriter.print(this.value);
+        if (this.val) {
+            printWriter.print("true");
+        } else {
+            printWriter.print("false");
+        }
     }
 
     @Override

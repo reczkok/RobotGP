@@ -1,33 +1,21 @@
 package Nodes;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 public class MainNode implements Node{
     private List<Node> children;
     private Node parent;
     private ControlStructures controlStructure;
-    private Map<ControlStructures, List<Node>> nodesByControlStructure;
-    private Set<ControlStructures> childrenControlStructures;
     private int depth;
 
     public MainNode(Node parent) {
         this.children = new ArrayList<>();
-        this.nodesByControlStructure = new HashMap<>();
         this.parent = parent;
         this.controlStructure = ControlStructures.MAIN;
-        this.childrenControlStructures = new HashSet<>();
     }
 
     public void addChild(Node child){
-        ControlStructures childControlStructure = child.getControlStructure();
-        if(this.childrenControlStructures.contains(childControlStructure)){
-            this.nodesByControlStructure.get(childControlStructure).add(child);
-        }else{
-            List<Node> children = new ArrayList<>();
-            children.add(child);
-            this.nodesByControlStructure.put(childControlStructure, children);
-            this.childrenControlStructures.add(childControlStructure);
-        }
         this.children.add(child);
     }
 
@@ -65,6 +53,39 @@ public class MainNode implements Node{
         return mainNode;
     }
 
+    @Override
+    public void replaceChild(Node oldChild, Node newChild) {
+        if(this.children.contains(oldChild)){
+            this.children.remove(oldChild);
+            this.children.add(newChild);
+        } else {
+            throw new UnsupportedOperationException("MainNode does not contain oldChild");
+        }
+    }
+
+    @Override
+    public List<ControlStructures> getLegalAlternatives(Node child) {
+        if(this.children.contains(child)){
+            return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
+        } else {
+            throw new UnsupportedOperationException("MainNode does not contain child");
+        }
+    }
+
+    @Override
+    public void printAtIndent(int i, PrintWriter printWriter) {
+        printWriter.println("main(){");
+        for(Node child : this.children){
+            child.printAtIndent(i + 1, printWriter);
+        }
+        printWriter.println("}");
+    }
+
+    @Override
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
     public void initializeRandom(int maxDepth) {
         if (maxDepth == 0) {
             return;
@@ -87,9 +108,9 @@ public class MainNode implements Node{
                 this.addChild(assignmentNode);
                 break;
             case 3:
-                MoveNode moveNode = new MoveNode(this);
-                moveNode.initializeRandom(maxDepth - 1);
-                this.addChild(moveNode);
+                OutputNode outputNode = new OutputNode(this);
+                outputNode.initializeRandom(maxDepth - 1);
+                this.addChild(outputNode);
                 break;
         }
     }
@@ -104,13 +125,6 @@ public class MainNode implements Node{
         return this.controlStructure;
     }
 
-    @Override
-    public List<Node> getChildrenByControlStructure(ControlStructures controlStructure) {
-        if(this.childrenControlStructures.contains(controlStructure)){
-            return this.nodesByControlStructure.get(controlStructure);
-        }
-        return null;
-    }
 
     @Override
     public boolean isLiteral() {

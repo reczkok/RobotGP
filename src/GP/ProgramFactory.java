@@ -1,6 +1,6 @@
-import Nodes.ControlStructures;
+package GP;
+
 import Nodes.MainNode;
-import Nodes.Node;
 
 public class ProgramFactory {
     public static Program generateRandomProgram() {

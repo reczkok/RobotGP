@@ -1,5 +1,6 @@
 package Nodes;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,12 @@ public class IdNode implements Node{
         this.controlStructure = ControlStructures.ID;
     }
 
+    public IdNode(Node parent, String varIndex) {
+        this.parent = parent;
+        this.controlStructure = ControlStructures.ID;
+        this.varIndex = Integer.parseInt(varIndex.substring(1));
+    }
+
     @Override
     public Node getParent() {
         return this.parent;
@@ -22,11 +29,6 @@ public class IdNode implements Node{
     @Override
     public ControlStructures getControlStructure() {
         return this.controlStructure;
-    }
-
-    @Override
-    public List<Node> getChildrenByControlStructure(ControlStructures controlStructure) {
-        return null;
     }
 
     @Override
@@ -51,7 +53,7 @@ public class IdNode implements Node{
 
     @Override
     public void printAtIndent(int indent) {
-        System.out.print("Id:" + this.varIndex);
+        System.out.print("X" + this.varIndex);
     }
 
     @Override
@@ -69,5 +71,25 @@ public class IdNode implements Node{
         IdNode idNode = new IdNode(parent);
         idNode.varIndex = this.varIndex;
         return idNode;
+    }
+
+    @Override
+    public void replaceChild(Node oldChild, Node newChild) {
+        throw new UnsupportedOperationException("IdNode does not support replaceChild");
+    }
+
+    @Override
+    public List<ControlStructures> getLegalAlternatives(Node child) {
+        throw new UnsupportedOperationException("IdNode does not support getLegalAlternatives");
+    }
+
+    @Override
+    public void printAtIndent(int i, PrintWriter printWriter) {
+        printWriter.print("X" + this.varIndex);
+    }
+
+    @Override
+    public void setParent(Node parent) {
+        this.parent = parent;
     }
 }

@@ -1,8 +1,12 @@
+package GP;
+
 import Nodes.ControlStructures;
-import Nodes.IfNode;
 import Nodes.MainNode;
 import Nodes.Node;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class Program {
@@ -21,6 +25,7 @@ public class Program {
         this.childrenControlStructures = new HashSet<>();
         this.fitness = 0;
         this.depth = 0;
+        updateTreeInfo();
     }
 
     public void initializeRandom(int maxDepth, int minNodes){
@@ -32,6 +37,26 @@ public class Program {
 
     public void print(){
         this.root.printAtIndent(0);
+    }
+
+    public void printToFile(String fileName){
+        File file = new File(fileName);
+        try {
+            boolean created = file.createNewFile();
+            if(!created){
+                file.delete();
+                file.createNewFile();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            PrintWriter printWriter = new PrintWriter(file);
+            this.root.printAtIndent(0, printWriter);
+            printWriter.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void registerNode(Node node, int depth){
@@ -72,8 +97,16 @@ public class Program {
         this.depth = depth;
     }
 
+    public void setFitness(double fitness){
+        this.fitness = fitness;
+    }
+
+    public double getFitness(){
+        return this.fitness;
+    }
+
     public Node getRandomNode(){
-        int random = (int) (Math.random() * (this.nodes.size() - 1)) + 1;
+        int random = (int) (Math.random() * this.nodes.size());
         return this.nodes.get(random);
     }
 
@@ -83,6 +116,24 @@ public class Program {
 
     public List<Node> getNodesOfType(ControlStructures controlStructure){
         return this.nodesByControlStructure.get(controlStructure);
+    }
+
+    public Node getRandomNodeOfType(ControlStructures controlStructure){
+        List<Node> nodes = this.nodesByControlStructure.get(controlStructure);
+        int random = (int) (Math.random() * nodes.size());
+        return nodes.get(random);
+    }
+
+    public Node mutateNode(Node node){
+        Node parent = node.getParent();
+        List<ControlStructures> possibleControlStructures = parent.getLegalAlternatives(node);
+        int random = (int) (Math.random() * possibleControlStructures.size());
+        ControlStructures newControlStructure = possibleControlStructures.get(random);
+        Node newNode = NodeFactory.getNodeOfControlStructure(newControlStructure, parent);
+        newNode.initializeRandom(this.depth - newNode.getDepth());
+        parent.replaceChild(node, newNode);
+        this.updateTreeInfo();
+        return newNode;
     }
 
     public Set<ControlStructures> getChildrenControlStructures() {

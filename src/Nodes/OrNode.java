@@ -1,8 +1,13 @@
 package Nodes;
 
-public class OrNode extends TwoArgOpNode{
+import java.io.PrintWriter;
+
+public class OrNode extends LogicalComparison{
     public OrNode(Node parent) {
         super(parent, ControlStructures.OR);
+    }
+    public OrNode(Node parent, Node left, Node right){
+        super(parent, ControlStructures.OR, left, right);
     }
 
     @Override
@@ -11,7 +16,9 @@ public class OrNode extends TwoArgOpNode{
         if(this.left != null) {
             this.left.printAtIndent(indent);
         }
+        System.out.print(")");
         System.out.print(" OR ");
+        System.out.print("(");
         if(this.right != null) {
             this.right.printAtIndent(indent);
         }
@@ -28,5 +35,20 @@ public class OrNode extends TwoArgOpNode{
         newNode.left = leftCopy;
         newNode.right = rightCopy;
         return newNode;
+    }
+
+    @Override
+    public void printAtIndent(int i, PrintWriter printWriter) {
+        printWriter.print("(");
+        if(this.left != null) {
+            this.left.printAtIndent(i, printWriter);
+        }
+        printWriter.print(")");
+        printWriter.print(" OR ");
+        printWriter.print("(");
+        if(this.right != null) {
+            this.right.printAtIndent(i, printWriter);
+        }
+        printWriter.print(")");
     }
 }

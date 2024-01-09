@@ -1,11 +1,17 @@
 package Nodes;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 public class ConditionNode extends TwoArgOpNode{
     private ComparisonOperators operator;
     public ConditionNode(Node parent) {
         super(parent, ControlStructures.CONDITION);
+    }
+
+    public ConditionNode(Node parent, ComparisonOperators operator){
+        super(parent, ControlStructures.CONDITION);
+        this.operator = operator;
     }
 
     @Override
@@ -75,5 +81,35 @@ public class ConditionNode extends TwoArgOpNode{
         newNode.right = rightCopy;
         newNode.operator = this.operator;
         return newNode;
+    }
+
+    @Override
+    public void printAtIndent(int i, PrintWriter printWriter) {
+        if (this.left != null) {
+            this.left.printAtIndent(i, printWriter);
+        }
+        switch (this.operator){
+            case EQUALS:
+                printWriter.print(" == ");
+                break;
+            case GREATER_THAN:
+                printWriter.print(" > ");
+                break;
+            case GREATER_THAN_OR_EQUAL:
+                printWriter.print(" >= ");
+                break;
+            case LESS_THAN:
+                printWriter.print(" < ");
+                break;
+            case LESS_THAN_OR_EQUAL:
+                printWriter.print(" <= ");
+                break;
+            case NOT_EQUALS:
+                printWriter.print(" != ");
+                break;
+        }
+        if (this.right != null) {
+            this.right.printAtIndent(i, printWriter);
+        }
     }
 }

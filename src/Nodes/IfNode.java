@@ -1,5 +1,6 @@
 package Nodes;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 public class IfNode implements Node{
@@ -9,8 +10,6 @@ public class IfNode implements Node{
     private List<Node> elseBody;
     private Node parent;
     private ControlStructures controlStructure;
-    private Map<ControlStructures, List<Node>> nodesByControlStructure;
-    private Set<ControlStructures> childrenControlStructures;
     private int depth;
 
     public IfNode(Node parent) {
@@ -19,8 +18,26 @@ public class IfNode implements Node{
         this.ifBody = new ArrayList<>();
         this.elseBody = new ArrayList<>();
         this.children = new ArrayList<>();
-        this.nodesByControlStructure = new HashMap<>();
-        this.childrenControlStructures = new HashSet<>();
+    }
+
+    public IfNode(Node parent, Node condition){
+        this.parent = parent;
+        this.controlStructure = ControlStructures.IF;
+        this.condition = condition;
+        this.ifBody = new ArrayList<>();
+        this.elseBody = new ArrayList<>();
+        this.children = new ArrayList<>();
+        this.addChild(condition);
+    }
+
+    public void addToBody(Node node){
+        this.ifBody.add(node);
+        this.addChild(node);
+    }
+
+    public void addToElseBody(Node node){
+        this.elseBody.add(node);
+        this.addChild(node);
     }
 
     @Override
@@ -34,22 +51,13 @@ public class IfNode implements Node{
     }
 
     @Override
-    public List<Node> getChildrenByControlStructure(ControlStructures controlStructure) {
-        if (this.childrenControlStructures.contains(controlStructure)) {
-            return this.nodesByControlStructure.get(controlStructure);
-        }
-        return null;
-    }
-
-    @Override
     public boolean isLiteral() {
         return false;
     }
 
     @Override
     public void initializeRandom(int maxDepth) {
-        ConditionNode conditionNode = new ConditionNode(this);
-        conditionNode.initializeRandom(maxDepth - 1);
+        Node conditionNode = this.getRandomCondition(maxDepth);
         this.condition = conditionNode;
         this.addChild(conditionNode);
         if (maxDepth <= 0) {
@@ -76,10 +84,10 @@ public class IfNode implements Node{
                 this.ifBody.add(assignmentNode);
                 break;
             case 3:
-                MoveNode moveNode = new MoveNode(this);
-                moveNode.initializeRandom(maxDepth - 1);
-                this.addChild(moveNode);
-                this.ifBody.add(moveNode);
+                OutputNode outputNode = new OutputNode(this);
+                outputNode.initializeRandom(maxDepth - 1);
+                this.addChild(outputNode);
+                this.ifBody.add(outputNode);
                 break;
         }
         random = (int) (Math.random() * 2);
@@ -105,10 +113,10 @@ public class IfNode implements Node{
                     this.elseBody.add(assignmentNode);
                     break;
                 case 3:
-                    MoveNode moveNode = new MoveNode(this);
-                    moveNode.initializeRandom(maxDepth - 1);
-                    this.addChild(moveNode);
-                    this.elseBody.add(moveNode);
+                    OutputNode outputNode = new OutputNode(this);
+                    outputNode.initializeRandom(maxDepth - 1);
+                    this.addChild(outputNode);
+                    this.elseBody.add(outputNode);
                     break;
             }
         }
@@ -116,15 +124,6 @@ public class IfNode implements Node{
 
     @Override
     public void addChild(Node child) {
-        ControlStructures childControlStructure = child.getControlStructure();
-        if(this.childrenControlStructures.contains(childControlStructure)){
-            this.nodesByControlStructure.get(childControlStructure).add(child);
-        }else{
-            List<Node> children = new ArrayList<>();
-            children.add(child);
-            this.nodesByControlStructure.put(childControlStructure, children);
-            this.childrenControlStructures.add(childControlStructure);
-        }
         this.children.add(child);
     }
 
@@ -190,5 +189,95 @@ public class IfNode implements Node{
             }
         }
         return copy;
+    }
+
+    @Override
+    public void replaceChild(Node oldChild, Node newChild) {
+        if(this.condition == oldChild){
+            this.condition = newChild;
+        } else if(this.ifBody.contains(oldChild)){
+            this.ifBody.remove(oldChild);
+            this.ifBody.add(newChild);
+        } else if(this.elseBody.contains(oldChild)){
+            this.elseBody.remove(oldChild);
+            this.elseBody.add(newChild);
+        } else {
+            throw new RuntimeException("Invalid child");
+        }
+        this.children.remove(oldChild);
+        this.addChild(newChild);
+    }
+
+    @Override
+    public List<ControlStructures> getLegalAlternatives(Node child) {
+        if(this.condition == child){
+            return Arrays.asList(ControlStructures.CONDITION);
+        } else if(this.ifBody.contains(child)){
+            return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
+        } else if(this.elseBody.contains(child)){
+            return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
+        } else {
+            throw new RuntimeException("Invalid child");
+        }
+    }
+
+    @Override
+    public void printAtIndent(int i, PrintWriter printWriter) {
+        for (int j = 0; j < i; j++) {
+            printWriter.print("\t");
+        }
+        printWriter.print("if(");
+        this.condition.printAtIndent(i + 1, printWriter);
+        printWriter.println("){");
+        for(Node child : this.ifBody){
+            child.printAtIndent(i + 1, printWriter);
+        }
+        for (int j = 0; j < i; j++) {
+            printWriter.print("\t");
+        }
+        if(!this.elseBody.isEmpty()){
+            printWriter.println("}else{");
+            for(Node child : this.elseBody){
+                child.printAtIndent(i + 1, printWriter);
+            }
+            for (int j = 0; j < i; j++) {
+                printWriter.print("\t");
+            }
+        }
+        printWriter.println("}");
+    }
+
+    @Override
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    private Node getRandomCondition(int maxDepth) {
+        if(maxDepth <= 0){
+            ConditionNode conditionNode = new ConditionNode(this);
+            conditionNode.initializeRandom(maxDepth - 1);
+            return conditionNode;
+        }else {
+            int random = (int) (Math.random() * 4);
+            switch (random) {
+                case 0:
+                    ConditionNode conditionNode = new ConditionNode(this);
+                    conditionNode.initializeRandom(maxDepth - 1);
+                    return conditionNode;
+                case 1:
+                    AndNode andNode = new AndNode(this);
+                    andNode.initializeRandom(maxDepth - 1);
+                    return andNode;
+                case 2:
+                    OrNode orNode = new OrNode(this);
+                    orNode.initializeRandom(maxDepth - 1);
+                    return orNode;
+                case 3:
+                    NotNode notNode = new NotNode(this);
+                    notNode.initializeRandom(maxDepth - 1);
+                    return notNode;
+            }
+            throw new RuntimeException("Invalid random number");
+        }
     }
 }

@@ -1,5 +1,6 @@
 package Nodes;
 
+import java.io.PrintWriter;
 import java.util.*;
 
 public class LoopNode implements Node{
@@ -8,8 +9,6 @@ public class LoopNode implements Node{
     private List<Node> children;
     private Node parent;
     private ControlStructures controlStructure;
-    private Map<ControlStructures, List<Node>> nodesByControlStructure;
-    private Set<ControlStructures> childrenControlStructures;
     private int depth;
 
     public LoopNode(Node parent) {
@@ -17,8 +16,20 @@ public class LoopNode implements Node{
         this.controlStructure = ControlStructures.LOOP;
         this.body = new ArrayList<>();
         this.children = new ArrayList<>();
-        this.nodesByControlStructure = new HashMap<>();
-        this.childrenControlStructures = new HashSet<>();
+    }
+
+    public LoopNode(Node parent, Node condition){
+        this.parent = parent;
+        this.controlStructure = ControlStructures.LOOP;
+        this.condition = condition;
+        this.children = new ArrayList<>();
+        this.body = new ArrayList<>();
+        this.addChild(condition);
+    }
+
+    public void addToBody(Node node){
+        this.body.add(node);
+        this.addChild(node);
     }
     @Override
     public Node getParent() {
@@ -31,19 +42,13 @@ public class LoopNode implements Node{
     }
 
     @Override
-    public List<Node> getChildrenByControlStructure(ControlStructures controlStructure) {
-        return null;
-    }
-
-    @Override
     public boolean isLiteral() {
         return false;
     }
 
     @Override
     public void initializeRandom(int maxDepth) {
-        ConditionNode conditionNode = new ConditionNode(this);
-        conditionNode.initializeRandom(maxDepth - 1);
+        Node conditionNode = this.getRandomCondition(maxDepth);
         this.condition = conditionNode;
         this.addChild(conditionNode);
         if (maxDepth <= 0) {
@@ -70,25 +75,16 @@ public class LoopNode implements Node{
                 this.body.add(assignmentNode);
                 break;
             case 3:
-                MoveNode moveNode = new MoveNode(this);
-                moveNode.initializeRandom(maxDepth - 1);
-                this.addChild(moveNode);
-                this.body.add(moveNode);
+                OutputNode outputNode = new OutputNode(this);
+                outputNode.initializeRandom(maxDepth - 1);
+                this.addChild(outputNode);
+                this.body.add(outputNode);
                 break;
         }
     }
 
     @Override
     public void addChild(Node child) {
-        ControlStructures childControlStructure = child.getControlStructure();
-        if(this.childrenControlStructures.contains(childControlStructure)){
-            this.nodesByControlStructure.get(childControlStructure).add(child);
-        }else{
-            List<Node> children = new ArrayList<>();
-            children.add(child);
-            this.nodesByControlStructure.put(childControlStructure, children);
-            this.childrenControlStructures.add(childControlStructure);
-        }
         this.children.add(child);
     }
 
@@ -138,5 +134,81 @@ public class LoopNode implements Node{
             }
         }
         return loopNode;
+    }
+
+    @Override
+    public void replaceChild(Node oldChild, Node newChild) {
+        if(this.condition == oldChild){
+            this.condition = newChild;
+        }else if(this.body.contains(oldChild)){
+            this.body.remove(oldChild);
+            this.body.add(newChild);
+        }else {
+            throw new RuntimeException("Invalid child");
+        }
+        this.children.remove(oldChild);
+        this.addChild(newChild);
+    }
+
+    @Override
+    public List<ControlStructures> getLegalAlternatives(Node child) {
+        if(this.condition == child){
+            return Arrays.asList(ControlStructures.CONDITION);
+        }else if(this.body.contains(child)){
+            return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
+        }else {
+            throw new RuntimeException("Invalid child");
+        }
+    }
+
+    @Override
+    public void printAtIndent(int i, PrintWriter printWriter) {
+        for (int j = 0; j < i; j++) {
+            printWriter.print("\t");
+        }
+        printWriter.print("while(");
+        this.condition.printAtIndent(i, printWriter);
+        printWriter.println("){");
+        for(Node child : this.body){
+            child.printAtIndent(i + 1, printWriter);
+        }
+        for (int j = 0; j < i; j++) {
+            printWriter.print("\t");
+        }
+        printWriter.println("}");
+    }
+
+    @Override
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    private Node getRandomCondition(int maxDepth) {
+        if(maxDepth <= 0){
+            ConditionNode conditionNode = new ConditionNode(this);
+            conditionNode.initializeRandom(maxDepth - 1);
+            return conditionNode;
+        }else {
+            int random = (int) (Math.random() * 4);
+            switch (random) {
+                case 0:
+                    ConditionNode conditionNode = new ConditionNode(this);
+                    conditionNode.initializeRandom(maxDepth - 1);
+                    return conditionNode;
+                case 1:
+                    AndNode andNode = new AndNode(this);
+                    andNode.initializeRandom(maxDepth - 1);
+                    return andNode;
+                case 2:
+                    OrNode orNode = new OrNode(this);
+                    orNode.initializeRandom(maxDepth - 1);
+                    return orNode;
+                case 3:
+                    NotNode notNode = new NotNode(this);
+                    notNode.initializeRandom(maxDepth - 1);
+                    return notNode;
+            }
+            throw new RuntimeException("Invalid random number");
+        }
     }
 }
