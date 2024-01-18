@@ -40,6 +40,36 @@ public class OutputNode implements Node{
 
     @Override
     public void initializeRandom(int maxDepth) {
+        if(maxDepth <= 1){
+            int random = (int) (Math.random() * 4);
+            switch (random) {
+                case 0:
+                    IdNode idNode1 = new IdNode(this);
+                    idNode1.initializeRandom(maxDepth - 1);
+                    this.exprNode = idNode1;
+                    this.addChild(idNode1);
+                    break;
+                case 1:
+                    FloatNode floatNode = new FloatNode(this);
+                    floatNode.initializeRandom(maxDepth - 1);
+                    this.exprNode = floatNode;
+                    this.addChild(floatNode);
+                    break;
+                case 2:
+                    BoolNode boolNode = new BoolNode(this);
+                    boolNode.initializeRandom(maxDepth - 1);
+                    this.exprNode = boolNode;
+                    this.addChild(boolNode);
+                    break;
+                case 3:
+                    IntNode intNode = new IntNode(this);
+                    intNode.initializeRandom(maxDepth - 1);
+                    this.exprNode = intNode;
+                    this.addChild(intNode);
+                    break;
+            }
+            return;
+        }
         int random = (int) (Math.random() * 9);
         switch (random) {
             case 0:
@@ -116,7 +146,7 @@ public class OutputNode implements Node{
         for (int i = 0; i < indent; i++) {
             System.out.print("\t");
         }
-        System.out.print("out( ");
+        System.out.print("out(");
         this.exprNode.printAtIndent(indent);
         System.out.println(");");
     }
@@ -150,8 +180,9 @@ public class OutputNode implements Node{
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child) {
-        return Arrays.asList(ControlStructures.ID, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INT);
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
+        if(depth >=1)return Arrays.asList(ControlStructures.ID, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INT);
+        else return Arrays.asList(ControlStructures.ID, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.INT);
     }
 
     @Override
@@ -159,9 +190,19 @@ public class OutputNode implements Node{
         for (int j = 0; j < i; j++) {
             printWriter.print("\t");
         }
-        printWriter.print("out( ");
+        printWriter.print("out(");
         this.exprNode.printAtIndent(i, printWriter);
         printWriter.println(");");
+    }
+
+    @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        for (int j = 0; j < i; j++) {
+            stringBuilder.append("\t");
+        }
+        stringBuilder.append("out(");
+        this.exprNode.printAtIndent(i, stringBuilder);
+        stringBuilder.append(");");
     }
 
     @Override

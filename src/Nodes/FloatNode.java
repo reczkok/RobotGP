@@ -40,6 +40,9 @@ public class FloatNode implements Node{
     @Override
     public void initializeRandom(int maxDepth) {
         this.value = (float) (Math.random() * NodeParameters.floatAmount);
+        if (Math.random() < 0.5) {
+            this.value *= -1;
+        }
     }
 
     @Override
@@ -80,13 +83,18 @@ public class FloatNode implements Node{
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child) {
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         throw new UnsupportedOperationException("IdNode does not support getLegalAlternatives");
     }
 
     @Override
     public void printAtIndent(int i, PrintWriter printWriter) {
-        printWriter.print(this.value);
+        printWriter.print(String.format("%.2f", this.value));
+    }
+
+    @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        stringBuilder.append(String.format("%.2f", this.value));
     }
 
     @Override

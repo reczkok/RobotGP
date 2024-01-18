@@ -4,12 +4,12 @@ public class ProgramVariable {
     public int intValue = 0;
     public boolean boolValue = false;
     public float floatValue = 0.0f;
-    private LastAccessed lastAccessed = LastAccessed.FLOAT;
+    private LastAccessed lastAccessed = LastAccessed.Float;
 
     public ProgramVariable() {
-        this.intValue = (int) (Math.random() * (Parameters.maxInitialInt - Parameters.minInitialInt) + Parameters.minInitialInt);
-        this.floatValue = (float) (Math.random() * (Parameters.maxInitialFloat - Parameters.minInitialFloat) + Parameters.minInitialFloat);
-        this.boolValue = Math.random() < 0.5;
+        this.intValue = 0;
+        this.floatValue = 0f;
+        this.boolValue = false;
     }
 
     public LastAccessed getLastAccessed() {
@@ -18,17 +18,17 @@ public class ProgramVariable {
 
     public void setIntValue(int intValue) {
         this.intValue = intValue;
-        this.lastAccessed = LastAccessed.INT;
+        this.lastAccessed = LastAccessed.Integer;
     }
 
     public void setBoolValue(boolean boolValue) {
         this.boolValue = boolValue;
-        this.lastAccessed = LastAccessed.BOOL;
+        this.lastAccessed = LastAccessed.Boolean;
     }
 
     public void setFloatValue(float floatValue) {
         this.floatValue = floatValue;
-        this.lastAccessed = LastAccessed.FLOAT;
+        this.lastAccessed = LastAccessed.Float;
     }
 
     public int getIntValue() {
@@ -41,6 +41,13 @@ public class ProgramVariable {
 
     public float getFloatValue() {
         return this.floatValue;
+    }
+
+    public void reset() {
+        this.intValue = 0;
+        this.floatValue = 0f;
+        this.boolValue = false;
+        this.lastAccessed = LastAccessed.Float;
     }
 }
 

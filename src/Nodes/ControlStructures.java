@@ -12,7 +12,6 @@ public enum ControlStructures {
     INPUT,
     MAIN,
     IF,
-    ELSE,
     FLOAT,
     ID,
     LOOP,

@@ -16,7 +16,8 @@ public interface Node {
     int getDepth();
     Node copy(Node parent);
     void replaceChild(Node oldChild, Node newChild);
-    List<ControlStructures> getLegalAlternatives(Node child);
+    List<ControlStructures> getLegalAlternatives(Node child, int depth);
     void printAtIndent(int i, PrintWriter printWriter);
+    void printAtIndent(int i, StringBuilder stringBuilder);
     void setParent(Node parent);
 }

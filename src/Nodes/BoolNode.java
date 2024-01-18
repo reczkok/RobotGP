@@ -83,7 +83,7 @@ public class BoolNode implements Node{
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child) {
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         throw new UnsupportedOperationException("IdNode does not support getLegalAlternatives");
     }
 
@@ -93,6 +93,15 @@ public class BoolNode implements Node{
             printWriter.print("true");
         } else {
             printWriter.print("false");
+        }
+    }
+
+    @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        if (this.val) {
+            stringBuilder.append("true");
+        } else {
+            stringBuilder.append("false");
         }
     }
 

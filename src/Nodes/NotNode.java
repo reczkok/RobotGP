@@ -89,9 +89,10 @@ public class NotNode implements Node{
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child) {
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         if(this.child == child){
-            return Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.NOT, ControlStructures.CONDITION);
+            if(depth>=3) return Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.NOT, ControlStructures.CONDITION);
+            else return Arrays.asList(ControlStructures.CONDITION);
         }else{
             throw new RuntimeException("Invalid child");
         }
@@ -105,12 +106,19 @@ public class NotNode implements Node{
     }
 
     @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        stringBuilder.append("NOT(");
+        this.child.printAtIndent(i + 1, stringBuilder);
+        stringBuilder.append(")");
+    }
+
+    @Override
     public void setParent(Node parent) {
         this.parent = parent;
     }
 
     private Node getRandomCondition(int maxDepth) {
-        if(maxDepth <= 0){
+        if(maxDepth <= 2){
             ConditionNode conditionNode = new ConditionNode(this);
             conditionNode.initializeRandom(maxDepth - 1);
             return conditionNode;

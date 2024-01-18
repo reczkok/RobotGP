@@ -64,9 +64,10 @@ public class MainNode implements Node{
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child) {
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         if(this.children.contains(child)){
-            return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
+            if(depth >= 4)return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
+            else return Arrays.asList(ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
         } else {
             throw new UnsupportedOperationException("MainNode does not contain child");
         }
@@ -82,12 +83,34 @@ public class MainNode implements Node{
     }
 
     @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        stringBuilder.append("main(){\n");
+        for(Node child : this.children){
+            child.printAtIndent(i + 1, stringBuilder);
+        }
+        stringBuilder.append("}\n");
+    }
+
+    @Override
     public void setParent(Node parent) {
         this.parent = parent;
     }
 
     public void initializeRandom(int maxDepth) {
-        if (maxDepth == 0) {
+        if (maxDepth <= 2) {
+            int random = (int) (Math.random() * 2);
+            switch (random) {
+                case 0:
+                    AssignmentNode assignmentNode = new AssignmentNode(this);
+                    assignmentNode.initializeRandom(maxDepth - 1);
+                    this.addChild(assignmentNode);
+                    break;
+                case 1:
+                    OutputNode outputNode = new OutputNode(this);
+                    outputNode.initializeRandom(maxDepth - 1);
+                    this.addChild(outputNode);
+                    break;
+            }
             return;
         }
         int random = (int) (Math.random() * 4);

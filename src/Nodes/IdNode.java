@@ -79,13 +79,18 @@ public class IdNode implements Node{
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child) {
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         throw new UnsupportedOperationException("IdNode does not support getLegalAlternatives");
     }
 
     @Override
     public void printAtIndent(int i, PrintWriter printWriter) {
         printWriter.print("X" + this.varIndex);
+    }
+
+    @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        stringBuilder.append("X").append(this.varIndex);
     }
 
     @Override

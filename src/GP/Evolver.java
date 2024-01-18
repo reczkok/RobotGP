@@ -1,35 +1,174 @@
 package GP;
 
 import Interpreter.Language.Deserializer;
+import Interpreter.Language.Evaluator;
+import Interpreter.Language.Evaluators.Evaluator11A;
+import Interpreter.Language.Evaluators.Evaluator12B;
+import Interpreter.Language.Interpreter;
+import Interpreter.Language.ProgramOutput;
 import Nodes.*;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.util.*;
 
 public class Evolver {
     List<Program> programs;
-    int[] integers = new int[NodeParameters.intAmount];
-    float[] floats = new float[NodeParameters.floatAmount];
-    ProgramVariable[] variables = new ProgramVariable[NodeParameters.varAmount];
+    double bestFitnessGlobal;
+    Evaluator evaluator;
+    ProgramInfo programInfo;
 
-    public Evolver() {
+    public Evolver(Evaluator evaluator) {
         this.programs = new ArrayList<>();
-        Program p1 = ProgramFactory.generateRandomProgram();
-        p1.printToFile("p1.txt");
-        Program p2 = deserializeProgram("p1.txt");
-        p1.print();
-        System.out.println("----------------------------");
-        p2.print();
+        this.bestFitnessGlobal = Double.POSITIVE_INFINITY;
+        this.evaluator = evaluator;
+        this.programInfo = new ProgramInfo();
+        evolve();
+        this.programInfo.toCSV("programInfo.csv");
     }
 
-    private void initializeVariables() {
-        for(int i = 0; i < NodeParameters.varAmount; i++) {
-            variables[i] = new ProgramVariable();
+    public void evolve(){
+        this.generateInitialPopulation();
+        for(int i = 0; i < Parameters.maxGenerations; i++){
+            if(bestFitnessGlobal < Parameters.fitnessThreshold){
+                System.out.println("Threshold reached");
+                printBestPop();
+                printBestPopOutput();
+                return;
+            }
+            System.out.println("Generation: " + i);
+            printStats();
+            System.out.println("----------------------------");
+            for(int j = 0; j < Parameters.populationSize; j++) {
+                float random = (float) Math.random();
+                Program candidate = null;
+                if (random < Parameters.crossoverProbability) {
+                    Program p1 = tournamentSelection(this.programs, Parameters.tournamentSize);
+                    Program p2 = tournamentSelection(this.programs, Parameters.tournamentSize);
+                    List<Program> children = this.crossOver(p1, p2);
+                    int attempts = 0;
+                    while (children == null){
+                        if(attempts > 50){
+                            break;
+                        }
+                        if(attempts % 10 == 0){
+                            p1 = tournamentSelection(this.programs, Parameters.tournamentSize);
+                            p2 = tournamentSelection(this.programs, Parameters.tournamentSize);
+                        }
+                        children = this.crossOver(p1, p2);
+                        attempts++;
+                    }
+                    if (children != null) {
+                        Program child1 = children.get(0);
+                        Program child2 = children.get(1);
+                        double child1Fitness = evaluateProgram(child1);
+                        double child2Fitness = evaluateProgram(child2);
+                        if (child1Fitness < child2Fitness) {
+                            child1.setFitness(child1Fitness);
+                            candidate = child1;
+                        } else {
+                            child2.setFitness(child2Fitness);
+                            candidate = child2;
+                        }
+                    }
+                } else {
+                    Program p1 = tournamentSelection(this.programs, Parameters.tournamentSize);
+                    candidate = this.mutate(p1);
+                    double candidateFitness = evaluateProgram(candidate);
+                    candidate.setFitness(candidateFitness);
+                }
+                if (candidate != null) {
+                    Program toReplace = negativeTournamentSelection(this.programs, Parameters.tournamentSize);
+                    this.programs.remove(toReplace);
+                    this.programs.add(candidate);
+                    if (candidate.getFitness() < bestFitnessGlobal) {
+                        bestFitnessGlobal = candidate.getFitness();
+                    }
+                }
+            }
+        }
+        System.out.println("Max generations reached");
+        printBestPop();
+        printBestPopOutput();
+    }
+
+    private void printBestPopOutput() {
+        double bestFitness = Double.POSITIVE_INFINITY;
+        Program bestProgram = null;
+        for(Program program : this.programs){
+            double fitness = program.getFitness();
+            if(fitness < bestFitness){
+                bestFitness = fitness;
+                bestProgram = program;
+            }
+        }
+        if (bestProgram != null) {
+            ProgramOutput programOutput = Interpreter.getProgramOutputs(bestProgram, Parameters.maxEvaluationIterations, evaluator.getEvaluator());
+            System.out.println("Best Program Output: ");
+            System.out.println(programOutput);
+        }
+    }
+
+    private void printStats(){
+        double bestFitness = Double.POSITIVE_INFINITY;
+        double averageFitness = 0;
+        double averageSize = 0;
+        int infiniteFitness = 0;
+        for(Program program : this.programs){
+            double fitness = program.getFitness();
+            averageSize += program.getSize();
+            if(fitness == Double.POSITIVE_INFINITY){
+                infiniteFitness++;
+                continue;
+            }
+            if(fitness < bestFitness){
+                bestFitness = fitness;
+            }
+            averageFitness += fitness;
+        }
+        averageSize /= this.programs.size();
+        averageFitness /= (this.programs.size() - infiniteFitness);
+        System.out.println("Best Fitness: " + bestFitness);
+        System.out.println("Average Fitness: " + averageFitness);
+        System.out.println("Infinite Fitness: " + infiniteFitness);
+        System.out.println("Average Size: " + averageSize);
+        this.programInfo.addInfo(bestFitness, averageFitness, averageSize);
+        printBestPop();
+
+    }
+
+    private void printBestPop(){
+        double bestFitness = Double.POSITIVE_INFINITY;
+        Program bestProgram = null;
+        for(Program program : this.programs){
+            double fitness = program.getFitness();
+            if(fitness < bestFitness){
+                bestFitness = fitness;
+                bestProgram = program;
+            }
+        }
+        if (bestProgram != null) {
+            System.out.println("Best Program: ");
+            bestProgram.print();
         }
     }
 
     private Program deserializeProgram(String fileName) {
         MainNode root = (MainNode) Deserializer.deserialize(fileName);
         return new Program(root);
+    }
+
+    private double evaluateProgram(Program p){
+        return Interpreter.runProgram(p, Parameters.maxEvaluationIterations, evaluator.getEvaluator());
+    }
+
+    private void testSerialization(){
+        Program p1 = ProgramFactory.generateRandomProgram();
+        p1.printToFile("p1.txt");
+        Program p2 = deserializeProgram("p1.txt");
+        p1.print();
+        System.out.println("----------------------------");
+        p2.print();
     }
 
     private void testCrossover(){
@@ -53,12 +192,15 @@ public class Evolver {
         out.print();
     }
 
-    public List<Program> doCrossOver(Program p1, Program p2, Set<ControlStructures> common){
+    public List<Program> doCrossOver(Program p1, Program p2, ControlStructures p1ControlStructure, Set<ControlStructures> p2ControlStructures){
         Program p1Copy = ProgramFactory.copyProgram(p1);
         Program p2Copy = ProgramFactory.copyProgram(p2);
-        ControlStructures crossoverPoint = common.iterator().next();
-        Node p1Node = p1Copy.getRandomNodeOfType(crossoverPoint);
-        Node p2Node = p2Copy.getRandomNodeOfType(crossoverPoint);
+        Node p1Node = p1Copy.getRandomNodeOfType(p1ControlStructure);
+        int p1NodeSize = p1.getNodeSize(p1Node);
+        Node p2Node = p2Copy.sizeFair(p1NodeSize, p2ControlStructures);
+        if(p2Node == null){
+            return null;
+        }
         Node p1Parent = p1Node.getParent();
         Node p2Parent = p2Node.getParent();
         swapHelper(p1Parent, p1Node, p2Node);
@@ -71,35 +213,49 @@ public class Evolver {
 
     private void swapHelper(Node parent, Node oldChild, Node newChild){
         ControlStructures parentControlStructure = parent.getControlStructure();
-        System.out.println("Parent Control Structure: " + parentControlStructure);
-        System.out.print("Swapped ");
-        oldChild.printAtIndent(0);
-        System.out.println("\nwith: ");
-        newChild.printAtIndent(0);
-        System.out.println("\n");
         parent.replaceChild(oldChild, newChild);
     }
 
     public List<Program> crossOver(Program p1, Program p2){
+        p1.updateTreeInfo();
+        p2.updateTreeInfo();
         Set<ControlStructures> p1ControlStructures = p1.getChildrenControlStructures();
+        ControlStructures randomControlStructure = p1ControlStructures.iterator().next();
+        Set<ControlStructures> allAllowedControlStructures = getLegalCrossOverStructures(randomControlStructure);
         Set<ControlStructures> p2ControlStructures = p2.getChildrenControlStructures();
-        Set<ControlStructures> p1Copy = new HashSet<>(p1ControlStructures);
-        p1Copy.retainAll(p2ControlStructures);
-        if(!p1Copy.isEmpty()) {
-            return this.doCrossOver(p1, p2, p1Copy);
+        Set<ControlStructures> common = new HashSet<>(allAllowedControlStructures);
+        common.retainAll(p2ControlStructures);
+        if(!common.isEmpty()) {
+            return this.doCrossOver(p1, p2, randomControlStructure, common);
         }
         return null;
     }
 
+    private Set<ControlStructures> getLegalCrossOverStructures(ControlStructures randomControlStructure) {
+        switch (randomControlStructure){
+            case MAIN:
+                return new HashSet<>(List.of(ControlStructures.MAIN));
+            case IF, LOOP, OUTPUT, ASSIGNMENT:
+                return new HashSet<>(Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.OUTPUT, ControlStructures.ASSIGNMENT));
+            case PLUS, MINUS, MODULO, MULTIPLY, DIVISION, INT, FLOAT, BOOL, INPUT:
+                return new HashSet<>(Arrays.asList(ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.MODULO, ControlStructures.MULTIPLY, ControlStructures.DIVISION, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.INPUT));
+            case AND, OR, NOT, CONDITION:
+                return new HashSet<>(Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.NOT, ControlStructures.CONDITION));
+            case ID:
+                return new HashSet<>(List.of(ControlStructures.ID));
+            default:
+                return new HashSet<>();
+        }
+    }
+
     public Program mutate(Program p){
         Program pCopy = ProgramFactory.copyProgram(p);
-        Node randomNode = pCopy.getRandomNode();
-        Node mutatedNode = pCopy.mutateNode(randomNode);
-        System.out.println("Mutated: ");
-        randomNode.printAtIndent(0);
-        System.out.println("\ninto: ");
-        mutatedNode.printAtIndent(0);
-        System.out.println("\n");
+        int nodeCount = pCopy.getSize();
+        int nodesToMutate = (int) Math.round(nodeCount * 0.05);
+        for(int i = 0; i < nodesToMutate; i++){
+            Node node = pCopy.getRandomNode();
+            pCopy.mutateNode(node);
+        }
         return pCopy;
     }
 
@@ -111,7 +267,7 @@ public class Evolver {
         }
         Program best = tournament.get(0);
         for(Program program : tournament){
-            if(program.getFitness() > best.getFitness()){
+            if(program.getFitness() < best.getFitness()){
                 best = program;
             }
         }
@@ -126,7 +282,7 @@ public class Evolver {
         }
         Program worst = tournament.get(0);
         for(Program program : tournament){
-            if(program.getFitness() < worst.getFitness()){
+            if(program.getFitness() > worst.getFitness()){
                 worst = program;
             }
         }
@@ -135,7 +291,73 @@ public class Evolver {
 
     private void generateInitialPopulation() {
         for(int i = 0; i < Parameters.populationSize; i++) {
-            programs.add(ProgramFactory.generateRandomProgram());
+            Program p = ProgramFactory.generateRandomProgram();
+            double fitness = evaluateProgram(p);
+            if(fitness < bestFitnessGlobal){
+                bestFitnessGlobal = fitness;
+            }
+            p.setFitness(fitness);
+            this.programs.add(p);
+        }
+    }
+}
+
+class ProgramInfo{
+    private List<Double> bestFitness;
+    private List<Double> averageFitness;
+    private List<Double> averageSize;
+
+    public ProgramInfo() {
+        this.bestFitness = new ArrayList<>();
+        this.averageFitness = new ArrayList<>();
+        this.averageSize = new ArrayList<>();
+    }
+
+    public void addBestFitness(double fitness){
+        this.bestFitness.add(fitness);
+    }
+
+    public void addAverageFitness(double fitness){
+        this.averageFitness.add(fitness);
+    }
+
+    public void addAverageSize(double size){
+        this.averageSize.add(size);
+    }
+
+    public void addInfo(double bestFitness, double averageFitness, double averageSize){
+        this.addBestFitness(bestFitness);
+        this.addAverageFitness(averageFitness);
+        this.addAverageSize(averageSize);
+    }
+
+    public void toCSV(String filename){
+        File file = new File(filename);
+        boolean exists = file.exists();
+        if (!exists) {
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            file.delete();
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        FileWriter writer;
+        try {
+            writer = new FileWriter(file);
+            writer.write("Best Fitness, Average Fitness, Average Size\n");
+            for(int i = 0; i < this.bestFitness.size(); i++){
+                writer.write(this.bestFitness.get(i) + "," + this.averageFitness.get(i) + "," + this.averageSize.get(i) + "\n");
+            }
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

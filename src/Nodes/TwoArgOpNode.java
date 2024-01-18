@@ -49,7 +49,7 @@ public abstract class TwoArgOpNode implements Node {
     }
 
     private Node getRandomNode(int maxDepth) {
-        if(maxDepth <= 0){
+        if(maxDepth <= 1){
             int random = (int) (Math.random() * 5);
             switch (random) {
                 case 0:
@@ -157,9 +157,10 @@ public abstract class TwoArgOpNode implements Node {
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child) {
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         if (left == child || right == child) {
-            return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INPUT);
+            if(depth >= 1) return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INPUT);
+            else return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.INPUT);
         } else {
             throw new RuntimeException("Invalid child");
         }

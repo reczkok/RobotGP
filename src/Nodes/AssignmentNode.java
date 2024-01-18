@@ -115,11 +115,12 @@ public class AssignmentNode implements Node{
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child) {
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         if (child == this.varaiableNode) {
             return Arrays.asList(ControlStructures.ID);
         } else if (child == this.exprNode) {
-            return Arrays.asList(ControlStructures.ID, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INT, ControlStructures.INPUT);
+            if(depth >= 1) return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INPUT);
+            else return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.INPUT);
         } else {
             throw new UnsupportedOperationException("AssignmentNode does not contain child");
         }
@@ -137,12 +138,23 @@ public class AssignmentNode implements Node{
     }
 
     @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        for (int j = 0; j < i; j++) {
+            stringBuilder.append("\t");
+        }
+        this.varaiableNode.printAtIndent(i, stringBuilder);
+        stringBuilder.append(" = ");
+        this.exprNode.printAtIndent(i, stringBuilder);
+        stringBuilder.append(";");
+    }
+
+    @Override
     public void setParent(Node parent) {
         this.parent = parent;
     }
 
     private Node getRandomNode(int maxDepth) {
-        if(maxDepth <= 0){
+        if(maxDepth <= 1){
             int random = (int) (Math.random() * 5);
             switch (random) {
                 case 0:

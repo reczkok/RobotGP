@@ -44,4 +44,17 @@ public class DivisionNode extends TwoArgOpNode{
         }
         printWriter.print(")");
     }
+
+    @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        stringBuilder.append("(");
+        if(this.left != null) {
+            this.left.printAtIndent(i, stringBuilder);
+        }
+        stringBuilder.append(" / ");
+        if(this.right != null) {
+            this.right.printAtIndent(i, stringBuilder);
+        }
+        stringBuilder.append(")");
+    }
 }

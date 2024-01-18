@@ -40,7 +40,7 @@ public abstract class LogicalComparison implements Node {
 
     @Override
     public void initializeRandom(int maxDepth){
-        if (maxDepth <= 0){
+        if (maxDepth <= 2){
             ConditionNode conditionNode = new ConditionNode(this);
             conditionNode.initializeRandom(maxDepth - 1);
             this.addChild(conditionNode);
@@ -113,9 +113,10 @@ public abstract class LogicalComparison implements Node {
     }
 
     @Override
-    public List<ControlStructures> getLegalAlternatives(Node child){
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         if(child == this.left || child == this.right){
-            return Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.CONDITION);
+            if(depth >=3)return Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.CONDITION);
+            else return List.of(ControlStructures.CONDITION);
         }else{
             throw new RuntimeException("Invalid child");
         }

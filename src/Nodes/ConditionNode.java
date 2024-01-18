@@ -112,4 +112,34 @@ public class ConditionNode extends TwoArgOpNode{
             this.right.printAtIndent(i, printWriter);
         }
     }
+
+    @Override
+    public void printAtIndent(int i, StringBuilder stringBuilder) {
+        if (this.left != null) {
+            this.left.printAtIndent(i, stringBuilder);
+        }
+        switch (this.operator){
+            case EQUALS:
+                stringBuilder.append(" == ");
+                break;
+            case GREATER_THAN:
+                stringBuilder.append(" > ");
+                break;
+            case GREATER_THAN_OR_EQUAL:
+                stringBuilder.append(" >= ");
+                break;
+            case LESS_THAN:
+                stringBuilder.append(" < ");
+                break;
+            case LESS_THAN_OR_EQUAL:
+                stringBuilder.append(" <= ");
+                break;
+            case NOT_EQUALS:
+                stringBuilder.append(" != ");
+                break;
+        }
+        if (this.right != null) {
+            this.right.printAtIndent(i, stringBuilder);
+        }
+    }
 }

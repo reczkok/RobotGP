@@ -3,9 +3,11 @@ package GP;
 import Nodes.ControlStructures;
 import Nodes.MainNode;
 import Nodes.Node;
+import Nodes.NotNode;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.*;
 
@@ -29,10 +31,18 @@ public class Program {
     }
 
     public void initializeRandom(int maxDepth, int minNodes){
-        while (this.depth < maxDepth || this.nodes.size() < minNodes){
+        while (this.depth <= maxDepth || this.nodes.size() < minNodes){
             this.root.initializeRandom(maxDepth);
             this.updateTreeInfo();
         }
+    }
+
+    public int getSize(){
+        return this.nodes.size();
+    }
+
+    public List<Node> getNodes() {
+        return this.nodes;
     }
 
     public void print(){
@@ -57,6 +67,12 @@ public class Program {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public String toString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        this.root.printAtIndent(0, stringBuilder);
+        return stringBuilder.toString();
     }
 
     private void registerNode(Node node, int depth){
@@ -125,15 +141,82 @@ public class Program {
     }
 
     public Node mutateNode(Node node){
+        if(node.getParent() == null){
+            return node;
+        }
         Node parent = node.getParent();
-        List<ControlStructures> possibleControlStructures = parent.getLegalAlternatives(node);
+        int desiredDepth = this.depth - node.getDepth()- 1;
+        List<ControlStructures> possibleControlStructures = parent.getLegalAlternatives(node, desiredDepth);
         int random = (int) (Math.random() * possibleControlStructures.size());
         ControlStructures newControlStructure = possibleControlStructures.get(random);
         Node newNode = NodeFactory.getNodeOfControlStructure(newControlStructure, parent);
-        newNode.initializeRandom(this.depth - newNode.getDepth());
+        newNode.initializeRandom(desiredDepth);
         parent.replaceChild(node, newNode);
         this.updateTreeInfo();
         return newNode;
+    }
+
+    public Node sizeFair(int desiredSize, Set<ControlStructures> desiredControlStructures){
+        List<Node> legalNodes = new ArrayList<>();
+        if(desiredControlStructures.isEmpty()){
+            return null;
+        }
+        for(ControlStructures controlStructure : desiredControlStructures){
+            legalNodes.addAll(this.nodesByControlStructure.get(controlStructure));
+        }
+        if(legalNodes.isEmpty()) return null;
+        List<Node> smaller = new ArrayList<>();
+        List<Node> larger = new ArrayList<>();
+        List<Node> equal = new ArrayList<>();
+        double smallerAvgSize = 0;
+        double largerAvgSize = 0;
+        for(Node node : legalNodes){
+            int size = this.getNodeSize(node);
+            if(size < desiredSize){
+                smaller.add(node);
+                smallerAvgSize += size;
+            }else if(size > desiredSize){
+                larger.add(node);
+                largerAvgSize += size;
+            }else{
+                equal.add(node);
+            }
+        }
+        if(smaller.isEmpty() || larger.isEmpty()){
+            if(equal.isEmpty()) return null;
+            int random = (int) (Math.random() * equal.size());
+            return legalNodes.get(random);
+        }
+        smallerAvgSize /= smaller.size();
+        largerAvgSize /= larger.size();
+
+        double p0 = 1.0/desiredSize;
+        if(equal.isEmpty()) p0 = 0;
+        double pPlus = (1.0 - p0) / (larger.size()*(1.0+(largerAvgSize/smallerAvgSize)));
+        //double pMinus = (1.0 - p0) / (smaller.size()*(1.0+(smallerAvgSize/largerAvgSize)));
+        double random = Math.random();
+        if(random < p0){
+            int randomIndex = (int) (Math.random() * equal.size());
+            return equal.get(randomIndex);
+        }else if(random < p0 + pPlus){
+            int randomIndex = (int) (Math.random() * larger.size());
+            return larger.get(randomIndex);
+        }else{
+            int randomIndex = (int) (Math.random() * smaller.size());
+            return smaller.get(randomIndex);
+        }
+    }
+
+    public int getNodeSize(Node node){
+        List<Node> nodes = new ArrayList<>();
+        nodes.add(node);
+        int size = 0;
+        while(!nodes.isEmpty()){
+            Node currentNode = nodes.remove(0);
+            size++;
+            nodes.addAll(currentNode.getChildren());
+        }
+        return size;
     }
 
     public Set<ControlStructures> getChildrenControlStructures() {
@@ -142,9 +225,7 @@ public class Program {
 
     public Program copy(){
         MainNode rootCopy = (MainNode) this.root.copy(null);
-        Program programCopy = new Program(rootCopy);
-        programCopy.updateTreeInfo();
-        return programCopy;
+        return new Program(rootCopy);
     }
 
     public MainNode getRoot() {
