@@ -115,7 +115,7 @@ public abstract class LogicalComparison implements Node {
     @Override
     public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         if(child == this.left || child == this.right){
-            if(depth >=3)return Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.CONDITION);
+            if(depth > 4)return Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.CONDITION);
             else return List.of(ControlStructures.CONDITION);
         }else{
             throw new RuntimeException("Invalid child");

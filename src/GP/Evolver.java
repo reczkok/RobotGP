@@ -36,6 +36,13 @@ public class Evolver {
                 printBestPopOutput();
                 return;
             }
+//            for(Program program : this.programs){
+//                double fitness = evaluateProgram(program);
+//                program.setFitness(fitness);
+//                if(fitness < bestFitnessGlobal){
+//                    bestFitnessGlobal = fitness;
+//                }
+//            }
             System.out.println("Generation: " + i);
             printStats();
             System.out.println("----------------------------");
@@ -61,6 +68,8 @@ public class Evolver {
                     if (children != null) {
                         Program child1 = children.get(0);
                         Program child2 = children.get(1);
+                        int child1Size = child1.getSize();
+                        int child2Size = child2.getSize();
                         double child1Fitness = evaluateProgram(child1);
                         double child2Fitness = evaluateProgram(child2);
                         if (child1Fitness < child2Fitness) {
@@ -73,9 +82,15 @@ public class Evolver {
                     }
                 } else {
                     Program p1 = tournamentSelection(this.programs, Parameters.tournamentSize);
+                    int p1Size = p1.getSize();
                     candidate = this.mutate(p1);
+                    int candidateSize = candidate.getSize();
                     double candidateFitness = evaluateProgram(candidate);
                     candidate.setFitness(candidateFitness);
+                    if (candidateSize > p1Size * 1.5) {
+                        //System.out.println("Size diff = " + (candidateSize - p1Size));
+                        candidate = null;
+                    }
                 }
                 if (candidate != null) {
                     Program toReplace = negativeTournamentSelection(this.programs, Parameters.tournamentSize);
@@ -251,7 +266,7 @@ public class Evolver {
     public Program mutate(Program p){
         Program pCopy = ProgramFactory.copyProgram(p);
         int nodeCount = pCopy.getSize();
-        int nodesToMutate = (int) Math.round(nodeCount * 0.05);
+        int nodesToMutate = 1;
         for(int i = 0; i < nodesToMutate; i++){
             Node node = pCopy.getRandomNode();
             pCopy.mutateNode(node);

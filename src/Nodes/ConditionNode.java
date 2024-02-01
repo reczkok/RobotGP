@@ -142,4 +142,14 @@ public class ConditionNode extends TwoArgOpNode{
             this.right.printAtIndent(i, stringBuilder);
         }
     }
+
+    @Override
+    public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
+        if (left == child || right == child) {
+            if(depth >= 2) return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INPUT);
+            else return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.INPUT);
+        } else {
+            throw new RuntimeException("Invalid child");
+        }
+    }
 }

@@ -91,7 +91,7 @@ public class NotNode implements Node{
     @Override
     public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         if(this.child == child){
-            if(depth>=3) return Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.NOT, ControlStructures.CONDITION);
+            if(depth>4) return Arrays.asList(ControlStructures.AND, ControlStructures.OR, ControlStructures.NOT, ControlStructures.CONDITION);
             else return Arrays.asList(ControlStructures.CONDITION);
         }else{
             throw new RuntimeException("Invalid child");

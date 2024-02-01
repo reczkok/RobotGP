@@ -232,12 +232,15 @@ public class IfNode implements Node{
     @Override
     public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
         if(this.condition == child){
+            if(depth > 3){
+                return Arrays.asList(ControlStructures.CONDITION, ControlStructures.AND, ControlStructures.OR, ControlStructures.NOT);
+            }
             return Arrays.asList(ControlStructures.CONDITION);
         } else if(this.ifBody.contains(child)){
-            if(depth>=4) return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
+            if(depth>6) return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
             else return Arrays.asList(ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
         } else if(this.elseBody.contains(child)){
-            if(depth>=4) return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
+            if(depth>6) return Arrays.asList(ControlStructures.IF, ControlStructures.LOOP, ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
             else return Arrays.asList(ControlStructures.ASSIGNMENT, ControlStructures.OUTPUT);
         } else {
             throw new RuntimeException("Invalid child");

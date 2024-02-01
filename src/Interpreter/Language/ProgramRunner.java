@@ -202,6 +202,8 @@ public class ProgramRunner extends grammar_robotBaseVisitor<ExpressionResult>{
         ExpressionResult condition = visit(ctx.conditions());
         if(condition.getType() == ExpressionFlags.Boolean && condition.boolValue){
             ctx.definition().forEach(this::visit);
+        } else if(ctx.else_block() != null && condition.getType() == ExpressionFlags.Boolean && !condition.boolValue){
+            ctx.else_block().definition().forEach(this::visit);
         }
         return new ExpressionResult();
     }

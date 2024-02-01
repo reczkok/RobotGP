@@ -54,7 +54,7 @@ public class AssignmentNode implements Node{
         idNode.initializeRandom(maxDepth - 1);
         this.varaiableNode = idNode;
         this.addChild(idNode);
-        Node exprNode = this.getRandomNode(maxDepth);
+        Node exprNode = this.getRandomNode(maxDepth - 1);
         this.exprNode = exprNode;
         this.addChild(exprNode);
     }
@@ -119,7 +119,7 @@ public class AssignmentNode implements Node{
         if (child == this.varaiableNode) {
             return Arrays.asList(ControlStructures.ID);
         } else if (child == this.exprNode) {
-            if(depth >= 1) return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INPUT);
+            if(depth > 1) return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INPUT);
             else return Arrays.asList(ControlStructures.ID, ControlStructures.INT, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.INPUT);
         } else {
             throw new UnsupportedOperationException("AssignmentNode does not contain child");

@@ -145,7 +145,10 @@ public class Program {
             return node;
         }
         Node parent = node.getParent();
-        int desiredDepth = this.depth - node.getDepth()- 1;
+        int desiredDepth = this.depth - node.getDepth() - 1;
+        if (desiredDepth < 0) {
+            desiredDepth = 0;
+        }
         List<ControlStructures> possibleControlStructures = parent.getLegalAlternatives(node, desiredDepth);
         int random = (int) (Math.random() * possibleControlStructures.size());
         ControlStructures newControlStructure = possibleControlStructures.get(random);

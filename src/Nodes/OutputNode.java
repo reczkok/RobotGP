@@ -181,7 +181,7 @@ public class OutputNode implements Node{
 
     @Override
     public List<ControlStructures> getLegalAlternatives(Node child, int depth) {
-        if(depth >=1)return Arrays.asList(ControlStructures.ID, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INT);
+        if(depth > 2)return Arrays.asList(ControlStructures.ID, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.PLUS, ControlStructures.MINUS, ControlStructures.DIVISION, ControlStructures.MULTIPLY, ControlStructures.MODULO, ControlStructures.INT);
         else return Arrays.asList(ControlStructures.ID, ControlStructures.FLOAT, ControlStructures.BOOL, ControlStructures.INT);
     }
 
