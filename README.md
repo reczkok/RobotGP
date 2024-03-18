@@ -4,3 +4,4 @@ It has the following features:
 - Parametrised population generation with fair size crossover and mutation
 - Evaluation interface based on ANTLR
 - Pre-made evaluators for some simple benchmarks
+- Interpreter for the programming language as well as serialization feature
